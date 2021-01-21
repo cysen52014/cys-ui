@@ -42,7 +42,7 @@
                     <slot name="suffix"></slot>
                 </template>
                 <i v-else
-                    class="iconfont icon-icon_xiaofucengguanbishanchu cys-input--clear-icon"
+                    class="cysicon icon-icon_xiaofucengguanbishanchu cys-input--clear-icon"
                     @click="handleClear"></i>
             </span>
         </span>
@@ -146,8 +146,8 @@ export default {
         box-sizing: border-box;
         display: inline-block;
         font-size: inherit;
-        height: 36px;
-        line-height: 36px;
+        height: 30px;
+        line-height: 30px;
         outline: none;
         padding: 0 10px;
         transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -204,7 +204,7 @@ export default {
                 width: 25px;
                 text-align: center;
                 transition: all 0.3s;
-                line-height: 36px;
+                line-height: 30px;
                 cursor: pointer;
 
                 &:after {
@@ -251,7 +251,7 @@ export default {
                 width: 25px;
                 text-align: center;
                 transition: all 0.3s;
-                line-height: 36px;
+                line-height: 30px;
                 cursor: pointer;
 
                 &:after {

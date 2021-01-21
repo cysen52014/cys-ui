@@ -4,6 +4,8 @@
 
 const path = require('path')
 
+const env = require("./" + process.env.env_config + ".env");
+
 module.exports = {
   dev: {
 
@@ -41,7 +43,7 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../dist'),
+    assetsRoot: env.NODE_ENV === '"npm"' ? path.resolve(__dirname, '../cysui') : path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
 

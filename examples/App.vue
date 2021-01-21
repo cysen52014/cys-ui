@@ -51,7 +51,7 @@ export default {
 
 <style lang="stylus">
 @import 'highlight.js/styles/color-brewer.css';
-@import '../static/fonts/iconfont.css';
+@import '../static/fonts/cysicon.css';
 
 body {
   margin: 0;
@@ -213,7 +213,7 @@ body {
 
       .main-body-right {
         padding: 0 84px 140px 64px;
-        min-height: 500px;
+        min-height: 600px;
         overflow: hidden;
 
         a {

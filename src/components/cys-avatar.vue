@@ -5,7 +5,7 @@
     }]">
         <img :src="src"
             v-if="src">
-        <i :class="['iconfont', icon]"
+        <i :class="['cysicon', icon]"
             v-else-if="icon"></i>
         <span class="cys-avatar-string"
             ref="children"

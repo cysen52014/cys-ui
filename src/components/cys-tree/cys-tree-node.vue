@@ -7,7 +7,7 @@
         }]"
             :style="{ 'padding-left': paddingLeft }"
             @click="handleClickNode">
-            <span :class="['iconfont','icon-icon_tree_collapse','cys-tree-node--icon',{
+            <span :class="['cysicon','icon-icon_tree_collapse','cys-tree-node--icon',{
                 'cys-tree-node--leaf':isLeaf,
                 'cys-tree-node--expanded-icon':expanded,
                 'cys-tree-node--visible-icon':!tree.showCollapse

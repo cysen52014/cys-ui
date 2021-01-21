@@ -19,11 +19,25 @@
 
 ```html
 <template>
-    <cys-button left-icon="icon-icon_shipinjiankong_zengjia"></cys-button>
-    <cys-button left-icon="icon-icon_list_edit"></cys-button>
-    <cys-button left-icon="icon-icon_list_delete"></cys-button>
-    <cys-button left-icon="icon-icon_list_edit">编辑</cys-button>
-    <cys-button right-icon="icon-icon_list_edit">编辑</cys-button>
+    <cys-button left-icon="cysicon icon-icon_shipinjiankong_zengjia"></cys-button>
+    <cys-button left-icon="cysicon icon-icon_list_edit"></cys-button>
+    <cys-button left-icon="cysicon icon-icon_list_delete"></cys-button>
+    <cys-button left-icon="cysicon icon-icon_list_edit">编辑</cys-button>
+    <cys-button right-icon="cysicon icon-icon_list_edit">编辑</cys-button>
+</template>
+```
+:::
+
+## 颜色
+
+:::demo 通过`left-icon`和`right-icon`设置文字左右的图标，没文字默认居中
+
+```html
+<template>
+    <cys-button :type="'primary'">编辑</cys-button>
+    <cys-button :type="'success'">编辑</cys-button>
+    <cys-button :type="'warning'">编辑</cys-button>
+    <cys-button :type="'danger'">编辑</cys-button>
 </template>
 ```
 
@@ -35,12 +49,12 @@
 
 ```html
 <template>
-    <cys-button left-icon="icon-icon_shipinjiankong_zengjia" circle></cys-button>
-    <cys-button left-icon="icon-icon_list_edit" circle plain></cys-button>
+    <cys-button left-icon="cysicon icon-icon_shipinjiankong_zengjia" circle></cys-button>
+    <cys-button left-icon="cysicon icon-icon_list_edit" circle plain></cys-button>
     <cys-button circle>编辑</cys-button>
     <cys-button circle plain>编辑</cys-button>
-    <cys-button left-icon="icon-icon_list_edit" circle>编辑</cys-button>
-    <cys-button right-icon="icon-icon_list_edit" circle>编辑</cys-button>
+    <cys-button left-icon="cysicon icon-icon_list_edit" circle>编辑</cys-button>
+    <cys-button right-icon="cysicon icon-icon_list_edit" circle>编辑</cys-button>
 </template>
 ```
 

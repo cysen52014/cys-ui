@@ -69,6 +69,31 @@ export default {
       path: 'cys-avatar',
       name: 'cys-avatar',
       title: "CysAvatar 头像"
+    },
+    'cys-table': {
+      path: 'cys-table',
+      name: 'cys-table',
+      title: "CysTable 表格"
+    },
+    'cys-pagination': {
+      path: 'cys-pagination',
+      name: 'cys-pagination',
+      title: "cys-pagination 分页"
+    },
+    'cys-form-search': {
+      path: 'cys-form-search',
+      name: 'cys-form-search',
+      title: "cys-form-search 搜索表单"
+    },
+    'cys-form': {
+      path: 'cys-form',
+      name: 'cys-form',
+      title: "cys-form 表单"
+    },
+    'cys-cascader': {
+      path: 'cys-cascader',
+      name: 'cys-cascader',
+      title: "cys-cascader 联动菜单"
     }
   }
 }

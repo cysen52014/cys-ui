@@ -6,7 +6,7 @@
         :style="style">
         <div class="cys-modal-header">
           <div class="cys-modal-title">{{title}}</div>
-          <i class="cys-modal-close iconfont icon-icon_close"
+          <i class="cys-modal-close cysicon icon-icon_close"
             v-show="showClose"
             @click="close"></i>
         </div>
@@ -70,7 +70,7 @@ export default {
   right: 0;
   text-align: center;
   background-color: $--modal-mask-background-color;
-  z-index: 999999;
+  z-index: 2000;
   overflow: auto;
 
   &:after {
@@ -91,7 +91,7 @@ export default {
     text-align: left;
     vertical-align: middle;
     opacity: 1;
-    z-index: 9999999;
+    z-index: 2001;
     padding: 30px;
   }
 

@@ -121,7 +121,7 @@ export default {
         display: inline-block;
         line-height: 1;
         position: relative;
-        vertical-align: middle;
+        vertical-align: top;
 
         .cys-checkbox--inner {
             border: $--checkbox-boder;
@@ -130,8 +130,8 @@ export default {
             position: relative;
             border-radius: $--checkbox-border-radius;
             box-sizing: border-box;
-            width: 18px;
-            height: 18px;
+            width: 17px;
+            height: 17px;
             z-index: 1;
             transition: border-color 0.25s cubic-bezier(0.71, -0.46, 0.29, 1.46), background-color 0.25s cubic-bezier(0.71, -0.46, 0.29, 1.46);
 
@@ -162,8 +162,8 @@ export default {
                 display: inline-block;
                 background-color: $--checkbox-indeterminate;
                 height: 2px;
-                width: 10px;
-                left: 3px;
+                width: 7px;
+                left: 4px;
                 right: 0;
                 top: 7px;
             }
@@ -185,7 +185,7 @@ export default {
                 left: 5px;
                 position: absolute;
                 top: 1px;
-                width: 5px;
+                width: 3px;
                 transition: transform 0.15s cubic-bezier(0.71, -0.46, 0.88, 0.6) 0.05s;
                 transform-origin: center;
                 transform: rotate(45deg) scaleY(1);

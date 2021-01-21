@@ -16,7 +16,7 @@ export default {
     inject: ['shSelect'],
     props: {
         value: {
-            type: [String, Number],
+            type: [String, Number, Object],
             required: true
         },
         label: {
@@ -85,11 +85,12 @@ ul {
             margin: 0;
             position: relative;
             white-space: nowrap;
-            height: 36px;
-            line-height: 36px;
+            height: 30px;
+            line-height: 30px;
             box-sizing: border-box;
             cursor: pointer;
             font-size: 14px;
+            text-align left;
 
             &:hover {
                 background-color: $--select--option-hover-background-color;

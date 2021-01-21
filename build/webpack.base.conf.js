@@ -26,13 +26,21 @@ function wrap(render) {
   };
 };
 
+const env = require('../config/' + process.env.env_config + '.env')
+
+console.log(env.NODE_ENV)
+
+const entry = env.NODE_ENV === '"npm"' ? {
+  cysui: './src/index.js',
+  cysui: ["babel-polyfill", "./src/index.js"]
+} : {
+  app: './examples/main.js',
+  app: ["babel-polyfill", "./examples/main.js"]
+}
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
-  entry: {
-    app: './examples/main.js',
-    app: ["babel-polyfill", "./examples/main.js"]
-  },
+  entry: entry,
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
@@ -119,9 +127,9 @@ module.exports = {
             [require('markdown-it-container'), 'warning']
           ],
           preprocess: function (MarkdownIt, source) { 
-            MarkdownIt.renderer.rules.table_open = function () {
-              return '<table class="table">';
-            };
+            // MarkdownIt.renderer.rules.table_open = function () {
+            //   return '<table class="table">';
+            // };
             MarkdownIt.renderer.rules.fence = wrap(MarkdownIt.renderer.rules.fence); 
             return source;
           }

@@ -42,6 +42,11 @@
           label: '广州'
         }]
       }
+    },
+    methods: {
+      sel(val) {
+        console.log(val, "selectvae")
+      }
     }
   }
 </script>
@@ -57,12 +62,12 @@
 
 ```html
 <template>
-  <cys-select v-model="value" placeholder="请选择">
+  <cys-select v-model="value" @change="sel" placeholder="请选择">
     <cys-option
       v-for="item in options"
       :key="item.value"
       :label="item.label"
-      :value="item.value">
+      :value="item">
     </cys-option>
   </cys-select>
 </template>

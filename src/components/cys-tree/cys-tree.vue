@@ -1,6 +1,6 @@
 <template>
     <div :class="['cys-tree']">
-        <cys-tree-node v-if="!isEmpty"
+        <cys-tree-node
             v-for="childNode in treeNodes"
             :textKey="textKey"
             :treeNode="childNode"

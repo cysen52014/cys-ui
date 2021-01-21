@@ -4,8 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router/router'
 import demoBlock from './components/demo-block.vue'
-import install from '../src/index'
-install(Vue);
+import cysUi from '../src/index'
+Vue.use(cysUi)
 Vue.component('demo-block', demoBlock)
 Vue.config.productionTip = false
 

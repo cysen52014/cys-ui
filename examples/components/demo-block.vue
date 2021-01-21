@@ -2,23 +2,29 @@
   <div class="demo-block">
     <div class="demo-block-source">
       <slot name="source"></slot>
-      <span class="demo-block-code-icon"
-        v-if="!$slots.default"
-        @click="showCode=!showCode"><img alt="expand code"
-          src="https://gw.alipayobjects.com/zos/rmsportal/wSAkBuJFbdxsosKKpqyq.svg"
-          class="code-expand-icon-show"></span>
-    </div>
-    <div class="demo-block-meta"
-      v-if="$slots.default">
-      <slot></slot>
-      <span v-if="$slots.default"
+      <span
         class="demo-block-code-icon"
-        @click="showCode=!showCode"><img alt="expand code"
+        v-if="!$slots.default"
+        @click="showCode = !showCode"
+        ><img
+          alt="expand code"
           src="https://gw.alipayobjects.com/zos/rmsportal/wSAkBuJFbdxsosKKpqyq.svg"
-          class="code-expand-icon-show"></span>
+          class="code-expand-icon-show"
+      /></span>
     </div>
-    <div class="demo-block-code"
-      v-show="showCode">
+    <div class="demo-block-meta" v-if="$slots.default">
+      <slot></slot>
+      <span
+        v-if="$slots.default"
+        class="demo-block-code-icon"
+        @click="showCode = !showCode"
+        ><img
+          alt="expand code"
+          src="https://gw.alipayobjects.com/zos/rmsportal/wSAkBuJFbdxsosKKpqyq.svg"
+          class="code-expand-icon-show"
+      /></span>
+    </div>
+    <div class="demo-block-code" v-show="showCode">
       <slot name="highlight"></slot>
     </div>
   </div>
@@ -74,7 +80,7 @@ export default {
 
   .demo-block-source {
     border-bottom: 1px solid #ebedf0;
-    padding: 20px 24px 20px;
+    padding: 20px 24px 48px;
     color: #444444;
     position: relative;
     margin-bottom: -1px;
@@ -129,5 +135,3 @@ export default {
   }
 }
 </style>
-
-

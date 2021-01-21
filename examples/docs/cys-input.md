@@ -97,11 +97,11 @@
 ```html
 <template>
   <cys-input placeholder="请输入警告信息">
-      <i slot="prefix" class="iconfont icon-icon_topbar_gaojingtongzhi"></i>
+      <i slot="prefix" class="cysicon icon-icon_topbar_gaojingtongzhi"></i>
   </cys-input>
 
   <cys-input placeholder="输入搜索内容">
-      <i slot="suffix" class="iconfont icon-icon_shipinjiankong_suofang"></i>
+      <i slot="suffix" class="cysicon icon-icon_shipinjiankong_suofang"></i>
   </cys-input>
 </template>
 ```

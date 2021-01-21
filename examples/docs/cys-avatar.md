@@ -30,7 +30,7 @@
 
 ```html
 <template>
-    <cys-avatar>Kitorv</cys-avatar>
+    <cys-avatar>Cys</cys-avatar>
 </template>
 ```
 
