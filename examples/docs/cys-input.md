@@ -21,7 +21,7 @@
 
 ```html
 <template>
-  <cys-input v-model="input" placeholder="请输入内容"></cys-input>
+  <cys-input v-model="input" type="password" placeholder="请输入内容"></cys-input>
 </template>
 
 <script>

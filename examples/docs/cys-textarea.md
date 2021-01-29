@@ -2,7 +2,7 @@
   module.exports = {
     data() {
       return {
-        input: '',
+        input: '111',
         input1: '',
         input2:''
       };
@@ -21,13 +21,13 @@
 
 ```html
 <template>
-  <cys-textarea v-model="input" placeholder="请输入内容"></cys-textarea>
+  <cys-textarea v-model="input" :rows="3" placeholder="请输入内容"></cys-textarea>
 </template>
 <script>
   export default {
     data() {
       return {
-        input: ''
+        input: '1111'
       }
     }
   }

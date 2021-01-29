@@ -151,7 +151,7 @@ export default {
             {
               label: this.options.indexLabel || "序号",
               prop: "_keyIndex",
-              fixed: "left",
+              fixed: this.options.indexFixed || "",
               style: {
                 width: this.options.indexWidth || "80px"
               }
@@ -167,10 +167,10 @@ export default {
           let fcol = {
             label: "",
             prop: "_keySelection",
-            fixed: "left",
+            fixed: this.options.selectionFixed || "",
             checked: false,
             style: {
-              width: this.options.indexSelectionWidth || "60px"
+              width: this.options.selectionWidth || "60px"
             },
             rowspan: cols.length,
             colspan: 1
@@ -183,10 +183,10 @@ export default {
             {
               label: "",
               prop: "_keySelection",
-              fixed: "left",
+              fixed: this.options.selectionFixed || "",
               checked: false,
               style: {
-                width: this.options.indexSelectionWidth || "60px"
+                width: this.options.selectionWidth || "60px"
               }
             }
           ].concat(cols);
@@ -199,8 +199,8 @@ export default {
         const mid = [];
         this.fixed.Rcols = [];
         this.fixed.Lcols = [];
-        this.fixed.RD = [0];
-        this.fixed.LD = [0];
+        this.fixed.RD = [];
+        this.fixed.LD = [];
 
         if (m) {
           const cee = cols => {
@@ -243,83 +243,90 @@ export default {
       }
       return cols;
     },
-    thWd(table, index, fx) {
-      const data = this.options.tbody.data;
-      const thead = table.querySelector(".thead-wrapper");
-      if (fx === "left") {
-        const th = thead.rows[0].cells[index];
-        const wd = parseInt(th.offsetWidth);
-        const br = parseInt(
-          document.defaultView.getComputedStyle(th, null).borderRight
-        );
-        const bl = parseInt(
-          document.defaultView.getComputedStyle(th, null).borderLeft
-        );
-        const l = wd + br + bl;
-        th.style.left = index === 0 ? 0 : eval(this.fixed.LD.join("+")) + "px";
-        this.tdWd(table, index, fx);
-        this.fixed.LD.push(l);
-      } else {
-        const th =
-          thead.rows[0].cells[data.length - (this.cols.length - 1 - index)];
-        const wd = parseInt(th.offsetWidth);
-        const br = parseInt(
-          document.defaultView.getComputedStyle(th, null).borderRight
-        );
-        const bl = parseInt(
-          document.defaultView.getComputedStyle(th, null).borderLeft
-        );
-        const l = wd + br + bl;
-        this.fixed.RD.push(l);
-        th.style.right =
-          index === data.length ? 0 : eval(this.fixed.RD.join("+")) + "px";
-        this.tdWd(table, index, fx);
-      }
-    },
-    tdWd(table, index, fx) {
-      const data = this.options.tbody.data;
+    tbWd(table, data) { // 固定列
       const tbody = table.querySelector(".tbody-wrapper");
-      data.forEach((td, index2) => {
-        if (fx === "left") {
-          const td = tbody.rows[index2].cells[index];
-          const wd = parseInt(td.offsetWidth);
-          const br = parseInt(
+      const thead = table.querySelector(".thead-wrapper");
+      const cl = thead.rows[0].cells;
+      const cw = [];
+      const cr = [];
+      const RC = [...this.fixed.RD].reverse();
+      this.fixed.LD.forEach(r => {
+        const th = cl[r.index];
+        const wd = parseInt(th.offsetWidth);
+        const br = parseInt(
+          document.defaultView.getComputedStyle(th, null).borderRight
+        );
+        const bl = parseInt(
+          document.defaultView.getComputedStyle(th, null).borderLeft
+        );
+        const ll = wd + br + bl;
+        th.style.left = r.index === 0 ? 0 : eval(cw.join("+")) + "px";
+        data.forEach((row, ii) => {
+          const td = tbody.rows[ii].cells[r.index];
+          const twd = parseInt(td.offsetWidth);
+          const tbr = parseInt(
             document.defaultView.getComputedStyle(td, null).borderRight
           );
-          const bl = parseInt(
+          const tbl = parseInt(
             document.defaultView.getComputedStyle(td, null).borderLeft
           );
-          const l = wd + br + bl + "px";
-          td.style.left =
-            index === 0 ? 0 : eval(this.fixed.LD.join("+")) + "px";
-        } else {
-          const td =
-            tbody.rows[index2].cells[
-              data.length - (this.cols.length - 1 - index)
-            ];
-          const wd = parseInt(td.offsetWidth);
-          const br = parseInt(
+          const l = twd + tbr + tbl + "px";
+          td.style.left = r.index === 0 ? 0 : eval(cw.join("+")) + "px";
+        });
+        cw.push(ll);
+      });
+      RC.forEach(r => {
+        const th = cl[r.index];
+        const wd = parseInt(th.offsetWidth);
+        const br = parseInt(
+          document.defaultView.getComputedStyle(th, null).borderRight
+        );
+        const bl = parseInt(
+          document.defaultView.getComputedStyle(th, null).borderLeft
+        );
+        const ll = wd + br + bl;
+        th.style.right =
+          r.index === Object.keys(data[0]).length - 1
+            ? 0
+            : eval(cr.join("+")) + "px";
+        data.forEach((row, ii) => {
+          const td = tbody.rows[ii].cells[r.index];
+          const twd = parseInt(td.offsetWidth);
+          const tbr = parseInt(
             document.defaultView.getComputedStyle(td, null).borderRight
           );
-          const bl = parseInt(
+          const tbl = parseInt(
             document.defaultView.getComputedStyle(td, null).borderLeft
           );
-          const l = wd + br + bl + "px";
+          const l = twd + tbr + tbl + "px";
           td.style.right =
-            index === data.length ? 0 : eval(this.fixed.RD.join("+")) + "px";
-        }
+            r.index === Object.keys(data[0]).length - 1
+              ? 0
+              : eval(cr.join("+")) + "px";
+        });
+        cr.push(ll);
       });
     },
     getFixedDate(conf) {
       const table = conf.table;
       if (!table) return;
-      this.fixed.RD = [0];
-      this.fixed.LD = [0];
+      this.fixed.RD = [];
+      this.fixed.LD = [];
+
       this.cols.map((col, index) => {
-        if (col.fixed === "left" && col.style && col.style.width) {
-          this.thWd(table, index, "left");
-        } else if (col.fixed === "right" && col.style && col.style.width) {
-          this.thWd(table, index, "right");
+        if (col.fixed === "left") {
+          this.fixed.LD.push({
+            index: index,
+            wd: 0
+          });
+        } else if (col.fixed === "right") {
+          this.fixed.RD.push({
+            index: index,
+            wd: 0
+          });
+        }
+        if (index === this.cols.length - 1) {
+          this.tbWd(table, conf.data);
         }
       });
     }

@@ -39,7 +39,7 @@ export default {
     if (this.prop) {
       this.dispatch("CysForm", "form-add", this);
       // 设置初始值
-      this.initialValue = this.fieldValue;
+      this.initialValue = this.form.value[this.prop];
       this.setRules();
     }
   },
@@ -94,9 +94,15 @@ export default {
       let rules = this.getFilteredRule(trigger);
       if (!rules || rules.length === 0) return true;
       // 使用 async-validator
-      const validator = new AsyncValidator({ [this.prop]: rules });
-      let model = { [this.prop]: this.fieldValue };
-      validator.validate(model, { firstFields: true }, errors => {
+      const rO = {};
+      rO[this.prop] = rules;
+      const validator = new AsyncValidator(rO);
+      const model = {};
+      console.log(this.form.value, "this.form.value");
+      model[this.prop] = this.form.value[this.prop];
+      console.log(model, "model==", rO);
+      validator.validate(model, { firstFields: true }, (errors, fields) => {
+        console.log(errors, fields, "errors==");
         this.isShowMes = errors ? true : false;
         this.message = errors ? errors[0].message : "";
         if (cb) cb(this.message);
@@ -104,7 +110,7 @@ export default {
     },
     resetField() {
       this.message = "";
-      this.form.model[this.prop] = this.initialValue;
+      this.form.value[this.prop] = this.initialValue;
     },
     onFieldBlur() {
       this.validate("blur");

@@ -34,6 +34,7 @@ export default {
         }
         this.fields.forEach(field => {
           field.validate("", error => {
+            console.log(error, "formfielderror===");
             if (error) valid = false;
             if (++count === this.fields.length) {
               resolve(valid);
@@ -46,6 +47,7 @@ export default {
   },
   created() {
     this.$on("form-add", field => {
+      console.log(field, "formfield===");
       if (field) this.fields.push(field);
     });
     this.$on("form-remove", field => {
@@ -65,11 +67,9 @@ export default {
       text-align right
       margin-right 5px
     }
-    .cys-input {
-      width auto;
-    }
     .cys-form-input {
       position relative
+      flex 1
     }
   }
   &.inline {

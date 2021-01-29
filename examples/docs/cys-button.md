@@ -34,7 +34,7 @@
 
 ```html
 <template>
-    <cys-button :type="'primary'">编辑</cys-button>
+    <cys-button disabled>编辑</cys-button>
     <cys-button :type="'success'">编辑</cys-button>
     <cys-button :type="'warning'">编辑</cys-button>
     <cys-button :type="'danger'">编辑</cys-button>

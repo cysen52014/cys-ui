@@ -1,6 +1,6 @@
 {
   "name": "cys-ui",
-  "version": "1.0.49",
+  "version": "1.0.77",
   "description": "ui for team",
   "main": "static/js/cysui.js",
   "scripts": {

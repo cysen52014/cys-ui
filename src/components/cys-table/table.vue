@@ -17,8 +17,8 @@
           <div class="cys-table-tbody">
             <div :class="getTodyWrapClass">
               <table cellpadding="0" cellspacing="0" class="tbody-wrapper">
-                <tbody v-if="options.tbody.data.length > 0">
-                  <tr v-for="(item, index) in options.tbody.data" :key="index">
+                <tbody v-if="tableData.length > 0">
+                  <tr v-for="(item, index) in tableData" :key="index">
                     <td v-if="item.expand" :colspan="item.colspan">
                       <slot :name="item.slotName" :row="item"></slot>
                     </td>
@@ -75,7 +75,7 @@
     </div>
     <cys-pagination
       v-if="options.isPagination"
-      :total="options.tbody.total"
+      :total="total"
       :layout="'total, sizes, prev, pager, next, jumper'"
       @current-change="currentChange"
       @size-change="sizeChange"
@@ -123,6 +123,29 @@ export default {
     },
     options: { type: Object, default: {} }
   },
+  watch: {
+    "tableData": {
+      handler(val, oldval) {
+        if (val) {
+          this.$nextTick(() => {
+            const tWrapper = document.querySelector("#" + this.guid);
+            if (tWrapper) {
+              this.broadcast("CysTableColum", "getFixedDate", {
+                table: tWrapper,
+                data: val
+              });
+              this.Scroll = new Scroll({
+                wrapper: tWrapper,
+                height: this.height,
+                minWidth: this.minWidth
+              });
+            }
+          });
+        }
+      },
+      deep: true
+    }
+  },
   computed: {
     isTheadShow() {
       return typeof this.options.thead.show === "undefined"
@@ -158,6 +181,8 @@ export default {
         current: 1,
         size: 10
       },
+      tableData: [],
+      total: 0,
       cols: [],
       fixed: {},
       thw: [],
@@ -180,7 +205,7 @@ export default {
       this.isSelectionCheckedAll();
     },
     callSelectAll(val) {
-      this.options.tbody.data = this.options.tbody.data.map(row => {
+      this.tableData = this.tableData.map(row => {
         row._keySelection = val;
         return row;
       });
@@ -188,11 +213,11 @@ export default {
       this.isSelectionCheckedAll();
     },
     isSelectionCheckedAll() {
-      if (this.options.tbody.data.every(r => r._keySelection === true)) {
+      if (this.tableData.every(r => r._keySelection === true)) {
         this.checkedAll = true;
         this.indeterminate = false;
       } else if (
-        this.options.tbody.data.every(r => r._keySelection === false)
+        this.tableData.every(r => r._keySelection === false)
       ) {
         this.checkedAll = false;
         this.indeterminate = false;
@@ -204,7 +229,7 @@ export default {
       this.$forceUpdate();
     },
     selectedRows() {
-      const rows = this.options.tbody.data.filter(
+      const rows = this.tableData.filter(
         row => row._keySelection === true
       );
       this.$emit("change", rows);
@@ -217,7 +242,7 @@ export default {
       if (this.rowKeys.every(v => v !== item[this.rowKey])) {
         this.rowKeys.push(item[this.rowKey]);
         const index = this.getRowIndex(item);
-        this.options.tbody.data.splice(index + 1, 0, {
+        this.tableData.splice(index + 1, 0, {
           expand: true,
           slotName: "expand",
           row: item,
@@ -227,7 +252,7 @@ export default {
       } else {
         this.rowKeys = this.rowKeys.filter(v => v !== item[this.rowKey]);
         const index = this.getRowIndex(item);
-        this.options.tbody.data.splice(index + 1, 1);
+        this.tableData.splice(index + 1, 1);
         isOpen = false;
       }
     },
@@ -236,7 +261,7 @@ export default {
         if (this.rowKeys.every(v => v !== item[this.rowKey])) {
           this.rowKeys.push(item[this.rowKey]);
           const index = this.getRowIndex(item);
-          this.options.tbody.data.splice(index + 1, 0, {
+          this.tableData.splice(index + 1, 0, {
             expand: true,
             slotName: "expend",
             row: item,
@@ -246,14 +271,14 @@ export default {
       } else {
         this.rowKeys = this.rowKeys.filter(v => v !== item[this.rowKey]);
         const index = this.getRowIndex(item);
-        this.options.tbody.data.splice(index + 1, 1);
+        this.tableData.splice(index + 1, 1);
       }
       this.$emit("expand-change", isOpen);
       this.$forceUpdate();
     },
     getRowIndex(item) {
       let index = 0;
-      this.options.tbody.data.forEach((row, ii) => {
+      this.tableData.forEach((row, ii) => {
         if (row[this.rowKey] === item[this.rowKey]) {
           index = ii;
         }
@@ -342,6 +367,11 @@ export default {
     async getTableData() {
       const opts = this.getOptions();
       const method = opts.method.interface;
+      if(!method) {
+        this.tableData = this.options.tbody.data;
+        return 
+      }
+
       const cKey = opts.method.cKey;
       const cVal = opts.method.cVal;
       const tKey = opts.method.tKey;
@@ -352,49 +382,35 @@ export default {
       if (opts.isLoading) opts.isLoading = true;
       this.setParameter();
       const parameter = this.getParameter();
-
       const respone = await method(parameter);
       this.timeOut = false;
       if (respone[cKey] * 1 === cVal * 1) {
         const data = respone[dKey];
         if (opts.isPagination) {
-          this.options.tbody.total = data.total * 1;
-          this.options.tbody.data = data.list;
+          this.total = data.total * 1;
+          this.tableData = data.list;
         } else {
-          this.options.tbody.total = 0;
-          this.options.tbody.data = data;
+          this.total = 0;
+          this.tableData = data;
         }
 
         if (opts.isLoading) opts.isLoading = false;
 
         if (this.options.isIndex) {
-          this.options.tbody.data = this.options.tbody.data.map((r, index) => {
+          this.tableData = this.tableData.map((r, index) => {
             r._keyIndex = (this.page.current - 1) * this.page.size + index + 1;
             return r;
           });
         }
 
         if (this.options.isSelection) {
-          this.options.tbody.data.map((r, index) => {
+          this.tableData.map((r, index) => {
             r._keySelection = false;
             return r;
           });
         }
 
         this.$forceUpdate();
-        this.$nextTick(() => {
-          const tWrapper = document.querySelector("#" + this.guid);
-          if (tWrapper) {
-            this.broadcast("CysTableColum", "getFixedDate", {
-              table: tWrapper
-            });
-            this.Scroll = new Scroll({
-              wrapper: tWrapper,
-              height: this.height,
-              minWidth: this.minWidth
-            });
-          }
-        });
         success && success(respone);
       } else {
         if (opts.isLoading) opts.isLoading = false;
@@ -413,7 +429,8 @@ export default {
                 this.Scroll.windRisize();
               }
               this.broadcast("CysTableColum", "getFixedDate", {
-                table: document.querySelector("#" + this.guid)
+                table: document.querySelector("#" + this.guid),
+                data: this.tableData
               });
             }
           }, 150);
@@ -422,12 +439,10 @@ export default {
       );
     },
     currentChange(val) {
-      console.log(val, "current===");
       this.page.current = val;
       this.getTableData();
     },
     sizeChange(val) {
-      console.log(val, "size===");
       this.page.size = val;
       this.getTableData();
     },

@@ -231,7 +231,6 @@ export default {
           }
         }
       }
-      console.log("li", li);
       return li;
     }
   },
@@ -265,7 +264,6 @@ export default {
   methods: {
     changeJumpPage(val) {
       this.currentPageIndex = val * 1;
-      console.log("this.currentPageIndex", this.currentPageIndex);
       this.$emit("current-change", this.currentPageIndex);
     },
     changeCurrentPage(index) {

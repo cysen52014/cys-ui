@@ -142,6 +142,22 @@ class Scroll {
       }
     );
 
+    window.addEventListener(
+      "hashchange",
+      () => {
+        this.docScrollControl.enableScroll();
+      },
+      false
+    );
+
+    window.addEventListener(
+      "popstate",
+      () => {
+        this.docScrollControl.enableScroll();
+      },
+      false
+    );
+
     // this.oParent.onselectstart = function(evt) {
     //   return false;
     // };
@@ -193,6 +209,7 @@ class Scroll {
       this.dragMove(evt);
     };
     document["on" + eventName["end"]] = evt => {
+      this.docScrollControl.enableScroll();
       this.dragEnd(evt);
     };
   }
@@ -203,8 +220,8 @@ class Scroll {
     //获取x和y
     var e = evt || event;
 
-    this.nx = (e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX);
-    this.ny = (e.touches && e.touches[0] ? e.touches[0].clientY : e.clientY);
+    this.nx = e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX;
+    this.ny = e.touches && e.touches[0] ? e.touches[0].clientY : e.clientY;
     //计算移动后的左偏移量和顶部的偏移量
   }
   dragEnd() {

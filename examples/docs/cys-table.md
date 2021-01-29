@@ -231,6 +231,7 @@
           isPagination: true,
           isLoading: true,
           isSelection: true,
+          selectionFixed: "left",
           isIndex: true,
           thead: {
             column: [

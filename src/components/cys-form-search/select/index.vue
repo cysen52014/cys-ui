@@ -60,7 +60,7 @@ export default {
         this.getOptions();
       }
     },
-    async getOptions() {
+    getOptions() {
       if (this.option.interface) {
         const method = this.option.interface;
         const cKey = this.option.cKey || "errorCode";
@@ -78,12 +78,15 @@ export default {
         } else {
           params = Object.assign({}, params);
         }
-        const respone = await method(params);
-        if (respone[cKey] * 1 === cVal * 1) {
-          this.option.options = respone[dKey];
-        }
+        method(params).then(respone => {
+          if (respone[cKey] * 1 === cVal * 1) {
+            this.option.options = respone[dKey];
+            this.list = this.option.options;
+          }
+        });
+      } else {
+        this.list = this.option.options;
       }
-      this.list = this.option.options;
     },
     change(val) {
       const obj = {};

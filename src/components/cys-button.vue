@@ -78,6 +78,16 @@ export default {
         font-size: 14px;
     }
 
+    &:disabled {
+      color #ebeef5
+      cursor not-allowed;
+      filter grayscale(100%);
+    }
+
+    &:disabled:active::before {
+      background none;
+    }
+
     &:active::before {
       width 100%
       height 100%

@@ -103,17 +103,19 @@ export default {
       if (this.showOptionNumber < 1) {
         return true;
       }
-      console.log(this.$slots.default, "this.$slots.default");
       if (!this.$slots.default) {
         return true;
       }
     }
   },
   watch: {
+    value() {
+      this.selectText = this.value === "" ? "" : this.selectOption.optionLabel;
+    },
     visible() {
       if (this.visible === false) {
         if (this.selectOption) {
-          this.selectText = this.selectOption.optionLabel;
+          // this.selectText = this.selectOption.optionLabel;
           this.$emit("input", this.selectOption.value);
           this.$emit("change", this.selectOption.value);
         }
