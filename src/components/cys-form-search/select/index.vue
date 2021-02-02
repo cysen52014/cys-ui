@@ -73,7 +73,6 @@ export default {
           obj[this.option.cashName] =
             window.__storevueappdate__state_formData[this.option.cashName];
           this.cashValue = obj[this.option.cashName];
-          console.log(params, "params===");
           params = Object.assign({}, params, obj);
         } else {
           params = Object.assign({}, params);

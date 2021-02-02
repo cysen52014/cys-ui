@@ -1,7 +1,7 @@
 {
   "main": "dist/static/js/cysui.js",
   "name": "cys-ui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "vue ui",
   "scripts": {
     "dev": "cross-env NODE_ENV=examples env_config=exp webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -10,7 +10,7 @@
     "build:npm": "cross-env NODE_ENV=npm env_config=npm node build/build.js"
   },
   "dependencies": {
-    "async-validator": "^3.5.1",
+    "async-validator": "^3.4.1",
     "moment": "^2.22.2",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"

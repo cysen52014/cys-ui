@@ -11,10 +11,12 @@ export default {
     return { fields: [] };
   },
   props: {
-    labelWidth: { type: String, default: "" },
-    inline: { type: Boolean, default: false },
     value: { type: Object },
-    rules: { type: Object }
+    rules: { type: Object },
+    labelWidth: { type: String, default: "" },
+    inline: {
+      type: Boolean
+    }
   },
   provide() {
     return { form: this };
@@ -34,7 +36,6 @@ export default {
         }
         this.fields.forEach(field => {
           field.validate("", error => {
-            console.log(error, "formfielderror===");
             if (error) valid = false;
             if (++count === this.fields.length) {
               resolve(valid);
@@ -47,7 +48,6 @@ export default {
   },
   created() {
     this.$on("form-add", field => {
-      console.log(field, "formfield===");
       if (field) this.fields.push(field);
     });
     this.$on("form-remove", field => {

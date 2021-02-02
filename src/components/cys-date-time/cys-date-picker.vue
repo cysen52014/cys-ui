@@ -257,7 +257,7 @@ export default {
       if (this.type === "daterange" || this.type === "datetimerange") {
         this.selectDateValue = [];
       } else {
-        this.selectDateValue = null;
+        this.selectDateValue = "";
       }
       this.$emit("change", this.selectDateValue);
       this.$emit("input", this.selectDateValue);

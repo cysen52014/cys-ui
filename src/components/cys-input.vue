@@ -30,6 +30,7 @@
       :max="$attrs['max']"
       :min="$attrs['min']"
       :step="$attrs['step']"
+      :readonly="$attrs['readonly']"
       :placeholder="$attrs['placeholder']"
       :disabled="disabled"
       :value="currentValue"
@@ -127,7 +128,6 @@ export default {
     // 文本内容改变事件
     handleChange(event) {
       this.$emit("change", event.target.value);
-      this.dispatch("CysFormItem", "form-change", event.target.value);
     },
     handleClear(e) {
       this.currentValue = "";
@@ -139,6 +139,7 @@ export default {
   watch: {
     value(val) {
       this.currentValue = val;
+      this.dispatch("CysFormItem", "form-change", val);
     }
   }
 };

@@ -124,13 +124,13 @@ export default {
     options: { type: Object, default: {} }
   },
   watch: {
-    "tableData": {
+    tableData: {
       handler(val, oldval) {
-        if (val) {
+        if (val && val.length > 0) {
           this.$nextTick(() => {
             const tWrapper = document.querySelector("#" + this.guid);
             if (tWrapper) {
-              this.broadcast("CysTableColum", "getFixedDate", {
+              this.broadcast("CysTableColum", "setColumFixd", {
                 table: tWrapper,
                 data: val
               });
@@ -195,7 +195,6 @@ export default {
   },
   created() {
     this.getTableData();
-    this.windowResize();
   },
   methods: {
     getStyles(item2) {
@@ -216,9 +215,7 @@ export default {
       if (this.tableData.every(r => r._keySelection === true)) {
         this.checkedAll = true;
         this.indeterminate = false;
-      } else if (
-        this.tableData.every(r => r._keySelection === false)
-      ) {
+      } else if (this.tableData.every(r => r._keySelection === false)) {
         this.checkedAll = false;
         this.indeterminate = false;
       } else {
@@ -229,9 +226,7 @@ export default {
       this.$forceUpdate();
     },
     selectedRows() {
-      const rows = this.tableData.filter(
-        row => row._keySelection === true
-      );
+      const rows = this.tableData.filter(row => row._keySelection === true);
       this.$emit("change", rows);
     },
     setFixed(fixed) {
@@ -367,9 +362,9 @@ export default {
     async getTableData() {
       const opts = this.getOptions();
       const method = opts.method.interface;
-      if(!method) {
+      if (!method) {
         this.tableData = this.options.tbody.data;
-        return 
+        return;
       }
 
       const cKey = opts.method.cKey;
@@ -416,27 +411,6 @@ export default {
         if (opts.isLoading) opts.isLoading = false;
         failed && failed(respone);
       }
-    },
-    windowResize() {
-      var resizeTimer = null;
-      window.addEventListener(
-        "resize",
-        () => {
-          resizeTimer = setTimeout(() => {
-            clearTimeout(resizeTimer);
-            if (resizeTimer) {
-              if (this.Scroll) {
-                this.Scroll.windRisize();
-              }
-              this.broadcast("CysTableColum", "getFixedDate", {
-                table: document.querySelector("#" + this.guid),
-                data: this.tableData
-              });
-            }
-          }, 150);
-        },
-        false
-      );
     },
     currentChange(val) {
       this.page.current = val;
@@ -491,9 +465,8 @@ export default {
   flex-direction: column;
   .cys-table-wrapper {
     overflow: hidden;
+    overflow-x: auto;
   }
-
-
 
   .center {
     text-align center;
@@ -532,6 +505,10 @@ export default {
       color: $--table-thead-th;
       background-color: $--table-th-background;
     }
+  }
+
+  &.scroll .cys-table-bar-box{
+     bottom: 17px;
   }
 
   .cys-table-bar-box {

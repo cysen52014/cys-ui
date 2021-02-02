@@ -20,34 +20,59 @@ class Scroll {
     this.getDirection();
     this.bindEvents();
     this.setBarViseble();
+    this.windRisize();
     this.docScrollControl = this.controlDocumentHandleScroll();
   }
   windRisize() {
-    this.oParentClientWidth = this.tableWrapper.clientWidth;
-    if (this.oParentClientWidth < this.wrapperMinWidth) {
-      this.barHWrap.style.display = "block";
-      if (!this.oParent.className.match(/scroll/gi)) {
-        this.oParent.className += " scroll";
-      }
-    } else {
-      this.barHWrap.style.display = "none";
-      if (this.oParent.className.match(/scroll/gi)) {
-        this.oParent.className = this.oParent.className.replace(
-          /\sscroll/gi,
-          ""
-        );
-      }
-    }
-    this.barHW = Math.floor(this.oParentClientWidth / 5);
-    this.hbar.style.width = this.barHW + "px";
-    new Drag().initialize(this.hbar, {
-      direction: "horizontal",
-      stageW: this.oParentClientWidth,
-      targetW: this.barHW,
-      end: result => {
-        this.HScroll(result.size);
-      }
-    });
+    // if (this.oParentClientWidth < this.wrapperMinWidth) {
+    //   this.barHWrap.style.display = "block";
+    //   if (!this.oParent.className.match(/scroll/gi)) {
+    //     this.oParent.className += " scroll";
+    //   }
+    // } else {
+    //   this.barHWrap.style.display = "none";
+    //   if (this.oParent.className.match(/scroll/gi)) {
+    //     this.oParent.className = this.oParent.className.replace(
+    //       /\sscroll/gi,
+    //       ""
+    //     );
+    //   }
+    // }
+    // this.barHW = Math.floor(this.oParentClientWidth / 5);
+    // this.hbar.style.width = this.barHW + "px";
+    // new Drag().initialize(this.hbar, {
+    //   direction: "horizontal",
+    //   stageW: this.oParentClientWidth,
+    //   targetW: this.barHW,
+    //   end: result => {
+    //     this.HScroll(result.size);
+    //   }
+    // });
+    var resizeTimer = null;
+    window.addEventListener(
+      "resize",
+      () => {
+        resizeTimer = setTimeout(() => {
+          clearTimeout(resizeTimer);
+          if (resizeTimer) {
+            this.oParentClientWidth = this.tableWrapper.clientWidth;
+            if (this.oParentClientWidth < this.wrapperMinWidth) {
+              if (!this.oParent.className.match(/scroll/gi)) {
+                this.oParent.className += " scroll";
+              }
+            } else {
+              if (this.oParent.className.match(/scroll/gi)) {
+                this.oParent.className = this.oParent.className.replace(
+                  /\sscroll/gi,
+                  ""
+                );
+              }
+            }
+          }
+        }, 150);
+      },
+      false
+    );
   }
   getDirection() {
     if (this.wrapperHeight > 0 && this.wrapperHeight !== "auto") {
@@ -55,7 +80,7 @@ class Scroll {
       this.createVBar();
     }
 
-    this.createHBar();
+    // this.createHBar();
   }
   setBarViseble() {
     this.wrapperScrollHeight = this.wrapper.scrollHeight;
@@ -64,7 +89,7 @@ class Scroll {
       this.barVWrap.style.display = "none";
     }
     if (this.oParentClientWidth < this.wrapperMinWidth) {
-      this.barHWrap.style.display = "block";
+      // this.barHWrap.style.display = "block";
       if (!this.oParent.className.match(/scroll/gi)) {
         this.oParent.className += " scroll";
       }
@@ -120,6 +145,7 @@ class Scroll {
   }
   bindEvents() {
     const eventName = this.mouseEvents();
+    if (this.barBoxHeight === "auto") return;
 
     this.oParent.addEventListener(
       "mouseenter",
@@ -236,27 +262,26 @@ class Scroll {
     let left = 0;
 
     if (Math.abs(fx) > Math.abs(ft)) {
-      if (Math.abs(this.nx - this.x) < 6) {
-        return;
-      }
-      this.speed = Math.floor(this.barBoxWidth / 7);
-      if (fx > 0) {
-        left = parseInt(this.hbar.style.left || 0) - this.speed;
-        if (left <= 0) {
-          left = 0;
-        }
-
-        this.hbar.style.left = left + "px";
-        this.HScroll(left);
-      }
-      if (fx < 0) {
-        left = parseInt(this.hbar.style.left || 0) + this.speed;
-        if (left >= this.barBoxWidth - this.barHW) {
-          left = this.barBoxWidth - this.barHW;
-        }
-        this.hbar.style.left = left + "px";
-        this.HScroll(left);
-      }
+      // if (Math.abs(this.nx - this.x) < 6) {
+      //   return;
+      // }
+      // this.speed = Math.floor(this.barBoxWidth / 7);
+      // if (fx > 0) {
+      //   left = parseInt(this.hbar.style.left || 0) - this.speed;
+      //   if (left <= 0) {
+      //     left = 0;
+      //   }
+      //   this.hbar.style.left = left + "px";
+      //   this.HScroll(left);
+      // }
+      // if (fx < 0) {
+      //   left = parseInt(this.hbar.style.left || 0) + this.speed;
+      //   if (left >= this.barBoxWidth - this.barHW) {
+      //     left = this.barBoxWidth - this.barHW;
+      //   }
+      //   this.hbar.style.left = left + "px";
+      //   this.HScroll(left);
+      // }
     } else if (Math.abs(fx) < Math.abs(ft)) {
       if (Math.abs(this.ny - this.y) < 6) {
         return;

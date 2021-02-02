@@ -125,7 +125,7 @@ export default {
     }
   },
   created() {
-    this.$on("getFixedDate", this.getFixedDate);
+    this.$on("setColumFixd", this.setColumFixd);
   },
   methods: {
     selectAll(val) {
@@ -307,7 +307,7 @@ export default {
         cr.push(ll);
       });
     },
-    getFixedDate(conf) {
+    setColumFixd(conf) {
       const table = conf.table;
       if (!table) return;
       this.fixed.RD = [];

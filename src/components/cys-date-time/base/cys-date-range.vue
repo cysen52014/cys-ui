@@ -94,10 +94,14 @@ export default {
       startTime: "",
       endTime: "",
       startDate: "",
+      startDateTime: "",
       endDate: "",
+      endDateTime: "",
       showView: "",
       range: {},
-      step: 0
+      step: 0,
+      st: false,
+      et: false
     };
   },
   components: {
@@ -113,7 +117,7 @@ export default {
         : moment()
             .startOf("month")
             .subtract("month", -1);
-            
+
     this.range = {
       start: startTime,
       end: endTime
@@ -135,13 +139,17 @@ export default {
     range: {
       handler(n, o) {
         this.startDate = moment(this.range.start).format("YYYY-MM-DD");
-        this.startDateTime = moment(this.startDate)
-          .startOf("day")
-          .format("HH:mm:ss");
+        this.startDateTime = this.st
+          ? moment(this.range.start).format("HH:mm:ss")
+          : moment(this.range.start)
+              .startOf("day")
+              .format("HH:mm:ss");
         this.endDate = moment(this.range.end).format("YYYY-MM-DD");
-        this.endDateTime = moment(this.endDate)
-          .endOf("day")
-          .format("HH:mm:ss");
+        this.endDateTime = this.et
+          ? moment(this.range.end).format("HH:mm:ss")
+          : moment(this.range.end)
+              .endOf("day")
+              .format("HH:mm:ss");
       },
       deep: true // 可以深度检测到 person 对象的属性值的变化
     }
@@ -161,27 +169,94 @@ export default {
     }
   },
   methods: {
+    overDay(val, type) {
+      const date = val;
+      if (type === 1) {
+        if (!val.match(/\d\d\d\d-\d\d-\d\d/gi)) {
+          return true;
+        }
+        const f = date.split(/\-/gi);
+        const mt = f[1];
+        const d = f[2];
+        if (mt > 12) {
+          return true;
+        } else {
+          const day = moment(val).daysInMonth();
+          if (d > day) {
+            return true;
+          }
+        }
+      } else {
+        if (!val.match(/\d\d:\d\d:\d\d/gi)) {
+          return true;
+        }
+        const e = date.split(/\:/gi);
+        const h = e[0];
+        const m = e[1];
+        const s = e[2];
+
+        if (h > 23) {
+          return true;
+        } else {
+          if (m > 59) {
+            return true;
+          } else {
+            if (s > 59) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    },
     changeStartDate(val) {
-      this.startTime = moment(val);
-      this.setRange(val);
+      if (this.overDay(val, 1)) {
+        this.startDate = moment(this.range.start).format("YYYY-MM-DD");
+        return false;
+      }
+      if (val) this.startTime = moment(val);
+      this.setRange(val, "start");
     },
     changeEndDate(val) {
+      if (this.overDay(val, 1)) {
+        this.startDate = moment(this.range.end).format("YYYY-MM-DD");
+        return false;
+      }
       this.endTime = moment(val);
-      this.setRange(val);
+      this.setRange(val, "end");
     },
     changeStartDateTime(val) {
+      this.st = true;
+      if (this.overDay(val, 2)) {
+        this.startDateTime = this.st
+          ? moment(this.range.start).format("HH:mm:ss")
+          : moment(this.range.start)
+              .startOf("day")
+              .format("HH:mm:ss");
+        return false;
+      }
       const val2 = moment(
         moment(this.range.start).format("YYYY-MM-DD") + " " + val
       );
       this.startTime = val2;
-      this.setRange(val2);
+      this.setRange(val2, "start");
     },
     changeEndDateTime(val) {
+      this.et = true;
+      if (this.overDay(val, 2)) {
+        this.endDateTime = this.et
+          ? moment(this.range.end).format("HH:mm:ss")
+          : moment(this.range.end)
+              .endOf("day")
+              .format("HH:mm:ss");
+        return false;
+      }
+
       const val2 = moment(
         moment(this.range.end).format("YYYY-MM-DD") + " " + val
       );
       this.endTime = val2;
-      this.setRange(val2);
+      this.setRange(val2, "end");
     },
     handlePrevYear() {
       this.startTime = moment(this.startTime).subtract(1, "years");
@@ -195,28 +270,38 @@ export default {
     handleNextYear() {
       this.endTime = moment(this.endTime).add(1, "years");
     },
-    setRange(val) {
-      this.step++;
-      if (this.step % 2 === 0) {
+    setRange(val, insert) {
+      if (insert === "start") {
+        this.range.start = val;
+      } else if (insert === "end") {
         this.range.end = val;
       } else {
-        this.range.start = val;
+        this.step++;
+        if (this.step % 2 === 0) {
+          this.range.end = val;
+        } else {
+          this.range.start = val;
+        }
       }
       if (moment(this.range.end).isBefore(this.range.start)) {
         const end = this.range.end;
         this.range.end = this.range.start;
         this.range.start = end;
       }
-      let date = [];
+      this.gate = [];
       if (this.type === "datetimerange") {
-        date = [
-          moment(this.range.start).startOf("day"),
-          moment(this.range.end).endOf("day")
+        this.gate = [
+          !this.st
+            ? moment(this.range.start).startOf("day")
+            : moment(this.range.start),
+          !this.et
+            ? moment(this.range.end).endOf("day")
+            : moment(this.range.end)
         ];
       } else {
-        date = [moment(this.range.start), moment(this.range.end)];
+        this.gate = [moment(this.range.start), moment(this.range.end)];
       }
-      this.selectDate(date);
+      this.selectDate(this.gate);
     },
     handleStartDateClick(val) {
       this.setRange(val);

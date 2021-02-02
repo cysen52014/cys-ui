@@ -22,7 +22,6 @@ export default {
   mixins: [Emitter],
   inject: ["form"],
   props: {
-    labelWidth: { type: String, default: "" },
     label: { type: String, default: "" },
     prop: { type: String },
     rules: { type: Array }
@@ -39,7 +38,7 @@ export default {
     if (this.prop) {
       this.dispatch("CysForm", "form-add", this);
       // 设置初始值
-      this.initialValue = this.form.value[this.prop];
+      this.initialValue = this.fieldValue;
       this.setRules();
     }
   },
@@ -70,12 +69,12 @@ export default {
       this.$on("form-change", this.onFieldChange);
     },
     getRules() {
-      if (this.form.rules) {
+      if (this.rules) {
+        return this.rules || [];
+      } else {
         let formRules = this.form.rules;
         formRules = formRules ? formRules[this.prop] : [];
         return formRules;
-      } else {
-        return this.rules ? this.rules : [];
       }
     },
     // 过滤出符合要求的 rule 规则
@@ -94,15 +93,25 @@ export default {
       let rules = this.getFilteredRule(trigger);
       if (!rules || rules.length === 0) return true;
       // 使用 async-validator
-      const rO = {};
-      rO[this.prop] = rules;
-      const validator = new AsyncValidator(rO);
-      const model = {};
-      console.log(this.form.value, "this.form.value");
-      model[this.prop] = this.form.value[this.prop];
-      console.log(model, "model==", rO);
-      validator.validate(model, { firstFields: true }, (errors, fields) => {
-        console.log(errors, fields, "errors==");
+      const Rul = rules.map(r => {
+        if (!r.validator && r.required) {
+          r.validator = (rule, value, callback) => {
+            if (typeof value !== "number") {
+              if (!value || (typeof value === "object" && value.length === 0)) {
+                callback(new Error(r.message));
+              } else {
+                callback();
+              }
+            } else {
+              callback();
+            }
+          };
+        }
+        return r;
+      });
+      const validator = new AsyncValidator({ [this.prop]: rules });
+      let model = { [this.prop]: this.fieldValue };
+      validator.validate(model, { firstFields: true }, errors => {
         this.isShowMes = errors ? true : false;
         this.message = errors ? errors[0].message : "";
         if (cb) cb(this.message);

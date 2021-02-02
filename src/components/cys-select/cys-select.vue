@@ -5,7 +5,7 @@
     :disabled="disabled"
   >
     <cys-input
-      :value="selectText"
+      v-model="selectText"
       :readonly="!filter"
       :placeholder="placeholder"
       :disabled="disabled"
@@ -110,14 +110,16 @@ export default {
   },
   watch: {
     value() {
-      this.selectText = this.value === "" ? "" : this.selectOption.optionLabel;
+      this.selectText = this.value === "" ? "" : (this.selectOption ? this.selectOption.optionLabel : "");
     },
     visible() {
       if (this.visible === false) {
         if (this.selectOption) {
-          // this.selectText = this.selectOption.optionLabel;
           this.$emit("input", this.selectOption.value);
           this.$emit("change", this.selectOption.value);
+          this.selectText = this.selectOption.label;
+        } else {
+          this.selectText = "";
         }
       } else {
         this.$emit("visible-change", this.visible);
