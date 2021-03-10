@@ -39,7 +39,7 @@
     <ul class="cys-pager">
       <li
         :class="item.active ? 'active' : ''"
-        v-for="(item, index) in getPageNumber"
+        v-for="(item, index) in paperList"
         :key="index"
         @click="changeJumpPage(item.index)"
       >
@@ -57,7 +57,6 @@
       <span>前往</span>
       <cys-input
         v-model="currentPageIndex"
-        placeholder="请输入内容"
         @change="changeJumpPage"
         :min="1"
         :type="'number'"
@@ -109,10 +108,49 @@ export default {
     isShowPageSizes() {
       const psize = this.pageSizes ? this.pageSizes : [];
       return psize.length > 0;
+    }
+  },
+  watch: {
+    currentPage: {
+      handler(newName, oldName) {
+        if (newName) {
+          this.currentPageIndex = newName;
+        }
+      },
+      immediate: true,
+      deep: true
     },
+    total: {
+      handler(newName, oldName) {
+        if (newName) {
+          this.getPageNumber();
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    pageSize: {
+      handler(newName, oldName) {
+        if (newName) {
+          this.pageSizeIndex = newName;
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
+  data() {
+    return {
+      currentPageIndex: 1,
+      pageSizeIndex: 10,
+      pageMax: 1,
+      paperList: []
+    };
+  },
+  methods: {
     getPageNumber() {
       const cIndex = Math.ceil(this.pageCount / 2);
-      const max = Math.ceil(this.total / this.pageSize);
+      const max = Math.ceil(this.total / this.pageSizeIndex);
       const li = [];
       if (this.pageCount < max) {
         this.pageMax = max;
@@ -231,61 +269,42 @@ export default {
           }
         }
       }
-      return li;
-    }
-  },
-  watch: {
-    currentPage: {
-      handler(newName, oldName) {
-        if (newName) {
-          this.currentPageIndex = newName;
-        }
-      },
-      immediate: true,
-      deep: true
+      this.paperList = li;
     },
-    pageSize: {
-      handler(newName, oldName) {
-        if (newName) {
-          this.pageSizeIndex = newName;
-        }
-      },
-      immediate: true,
-      deep: true
-    }
-  },
-  data() {
-    return {
-      currentPageIndex: 1,
-      pageSizeIndex: 10,
-      pageMax: 1
-    };
-  },
-  methods: {
+    resetCurrentPage(val) {
+      this.currentPageIndex = val * 1;
+      this.getPageNumber();
+      this.$emit("current-change", this.currentPageIndex);
+    },
     changeJumpPage(val) {
       this.currentPageIndex = val * 1;
+      this.getPageNumber();
       this.$emit("current-change", this.currentPageIndex);
     },
     changeCurrentPage(index) {
       if (isNaN(Number(index))) return;
-      const max = Math.ceil(this.total / this.pageSize);
+      const max = Math.ceil(this.total / this.pageSizeIndex);
       this.currentPageIndex = index * 1;
       if (this.currentPageIndex > max) {
         this.currentPageIndex = max;
       } else if (this.currentPageIndex <= 1) {
         this.currentPageIndex = 1;
       }
+      this.getPageNumber();
       this.$emit("current-change", this.currentPageIndex);
     },
     changePageSize(size) {
+      this.pageSizeIndex = size;
+      this.getPageNumber();
       this.$emit("size-change", size);
     },
     next() {
-      const max = Math.ceil(this.total / this.pageSize);
+      const max = Math.ceil(this.total / this.pageSizeIndex);
       this.currentPageIndex++;
       if (this.currentPageIndex > max) {
         this.currentPageIndex = max;
       }
+      this.getPageNumber();
       this.$emit("current-change", this.currentPageIndex);
     },
     prev() {
@@ -293,6 +312,7 @@ export default {
       if (this.currentPageIndex <= 1) {
         this.currentPageIndex = 1;
       }
+      this.getPageNumber();
       this.$emit("current-change", this.currentPageIndex);
     }
   }

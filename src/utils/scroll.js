@@ -6,8 +6,9 @@ class Scroll {
     this.oBody = this.oParent.querySelector(".cys-table-tbody");
     this.tableWrapper = this.oParent.querySelector(".cys-table-wrapper");
     this.wrapper = this.oParent.querySelector(".cys-table-body-wrapper");
+    this.scWrapper = this.oParent.querySelector(".cys-table-scwrapper");
     this.wrapperHeight = parseInt(opts.height) || "auto";
-    this.wrapperMinWidth = parseInt(opts.minWidth) || 1300;
+    this.wrapperMinWidth = parseInt(opts.minWidth) || 1000;
     this.barBoxHeight = this.wrapperHeight;
     this.barBoxWidth =
       (this.oParent.clientWidth < this.wrapperMinWidth
@@ -15,6 +16,10 @@ class Scroll {
         : this.wrapperMinWidth) || 0;
     this.tableWrapperSrollWidth = this.tableWrapper.scrollWidth;
     this.wrapper.style.height = this.barBoxHeight + "px";
+
+    // this.scWrapper.clientWidth < this.wrapperMinWidth
+    //   ? (this.scWrapper.className = "cys-table-scwrapper min")
+    //   : (this.scWrapper.className = "cys-table-scwrapper");
 
     this.speed = 10;
     this.getDirection();
@@ -68,6 +73,9 @@ class Scroll {
                 );
               }
             }
+            // this.scWrapper.clientWidth <= this.wrapperMinWidth
+            //   ? (this.scWrapper.className = "cys-table-scwrapper min")
+            //   : (this.scWrapper.className = "cys-table-scwrapper");
           }
         }, 150);
       },

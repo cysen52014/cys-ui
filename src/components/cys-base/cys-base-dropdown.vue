@@ -59,12 +59,13 @@ export default {
 
     .cys-base-dropdown--content {
         background-color: #ffffff;
-        width: 100%;
+        width: calc(100% - 2px);
         box-sizing: border-box;
-        box-shadow: 0 0 2px #808080;
         border-radius: 2px;
         position: absolute;
+        left 1px;
         z-index: 900;
+        box-shadow 0px 2px 8px 0 rgba(0 0 0 0.1)
     }
 
     .cys-base-dropdown-enter-active, .cys-base-dropdown-leave-active {

@@ -2,30 +2,23 @@
   <div class="cys-form--inline">
     <div class="cys-form-label" v-html="option.label"></div>
     <div class="cys-form-content">
-      <cys-select
+      <cys-cascader
         v-model="option.value"
-        :placeholder="option.placeholder || ''"
-        :clearable="option.clearable || false"
-        :disabled="option.disabled || false"
-        :filter="option.filter || false"
+        :options="getList"
         @change="change"
         @visible-change="visibleChange"
-      >
-        <cys-option
-          v-for="(item, index) in getList"
-          :key="index"
-          :label="option.optionLabel ? item[option.optionLabel] : item.label"
-          :value="option.optionValue ? item[option.optionValue] : item.value"
-        >
-        </cys-option>
-      </cys-select>
+        :clearable="option.clearable"
+        :filter="option.filter"
+        :props="option.props"
+        :placeholder="option.placeholder"
+      ></cys-cascader>
     </div>
   </div>
 </template>
 <script>
 export default {
-  name: "CysFormSelect",
-  componentName: "CysFormSelect",
+  name: "CysFormCascader",
+  componentName: "CysFormCascader",
   props: {
     option: {
       type: Object,
@@ -66,7 +59,7 @@ export default {
         }
       }
     },
-    getOptions() {
+    async getOptions() {
       if (this.option.interface) {
         const method = this.option.interface;
         const cKey = this.option.cKey || "errorCode";
@@ -83,22 +76,22 @@ export default {
         } else {
           params = Object.assign({}, params);
         }
-        method(params).then(respone => {
-          if (respone[cKey] * 1 === cVal * 1) {
-            this.option.options = respone[dKey];
-            this.list = this.option.options;
-          }
-        });
+        const respone = await method(params);
+        if (respone[cKey] * 1 === cVal * 1) {
+          this.option.options = respone[dKey];
+          this.list = this.option.options;
+        }
       } else {
         this.list = this.option.options;
       }
     },
     change(val) {
       const obj = {};
-      if (this.option.obj2Array) {
-        obj[this.option.field] = val ? val.join(",") : "";
+      obj[this.option.field] = val;
+      if (val instanceof Array) {
+        obj[this.option.field] = val.join(",");
       } else {
-        obj[this.option.field] = val ? val : "";
+        obj[this.option.field] = val;
       }
       this.$emit("change", obj);
     }

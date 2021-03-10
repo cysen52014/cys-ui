@@ -254,7 +254,7 @@
               return {
                 errorCode: "0",
                 data: {
-                  total: 100,
+                  total: 19,
                   list: [
                     {
                       aa: "列1一",
@@ -291,6 +291,66 @@
                       aa: "列3一",
                       bb: "列3二",
                       cc: "列3三"
+                    },
+                    {
+                      aa: "列2一",
+                      bb: "列2二",
+                      cc: "列2三"
+                    },
+                    {
+                      aa: "列3一",
+                      bb: "列3二",
+                      cc: "列3三"
+                    },
+                    {
+                      aa: "列3一",
+                      bb: "列3二",
+                      cc: "列3三"
+                    },
+                    {
+                      aa: "列2一",
+                      bb: "列2二",
+                      cc: "列2三"
+                    },
+                    {
+                      aa: "列3一",
+                      bb: "列3二",
+                      cc: "列3三"
+                    },
+                    {
+                      aa: "列3一",
+                      bb: "列3二",
+                      cc: "列3三"
+                    },
+                    {
+                      aa: "列2一",
+                      bb: "列2二",
+                      cc: "列2三"
+                    },
+                    {
+                      aa: "列3一",
+                      bb: "列3二",
+                      cc: "列3三"
+                    },
+                    {
+                      aa: "列3一",
+                      bb: "列3二",
+                      cc: "列3三"
+                    },
+                    {
+                      aa: "列2一",
+                      bb: "列2二",
+                      cc: "列2三"
+                    },
+                    {
+                      aa: "列3一",
+                      bb: "列3二",
+                      cc: "列3三"
+                    },
+                    {
+                      aa: "列3一",
+                      bb: "列3二",
+                      cc: "列3三"
                     }
                   ]
                 }
@@ -306,6 +366,9 @@
         options4: {
           isLoading: true,
           isIndex: true,
+          indexFixed: true,
+          selectionFixed: true,
+          isSelection: true,
           thead: {
             column: [[
               {id:"1",label:"商务中心", prop: "orgName", rowspan:2, colspan:1},

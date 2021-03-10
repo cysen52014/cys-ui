@@ -74,6 +74,7 @@
       <cys-loading v-if="options.isLoading" :plate="'white'"></cys-loading>
     </div>
     <cys-pagination
+      ref="table-pagination"
       v-if="options.isPagination"
       :total="total"
       :layout="'total, sizes, prev, pager, next, jumper'"
@@ -412,11 +413,15 @@ export default {
         failed && failed(respone);
       }
     },
+    resetCurrentPage(val) {
+      this.$refs["table-pagination"].resetCurrentPage(val);
+    },
     currentChange(val) {
       this.page.current = val;
       this.getTableData();
     },
     sizeChange(val) {
+      this.page.current = 1;
       this.page.size = val;
       this.getTableData();
     },
@@ -478,7 +483,8 @@ export default {
   }
 
   .cys-table-scwrapper{
-    min-width: 1300px;
+    width: 100%;
+    min-width: 1000px;
     background $--table-background-color
   }
 

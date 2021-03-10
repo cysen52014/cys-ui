@@ -27,6 +27,8 @@ import CysFormSearch from "./components/cys-form-search";
 import CysForm from "./components/cys-form/form.vue";
 import CysFormItem from "./components/cys-form/formItem.vue";
 import CysCascader from "./components/cys-cascader/index.vue";
+import CysMessage from "./components/cys-message/message";
+
 
 
 const components = [
@@ -64,8 +66,10 @@ const install = function(Vue) {
   components.map(component => {
     Vue.component(component.name, component);
   })
+  Vue.prototype.$dateRangePosition = "";
   Vue.prototype.$shAlert = CysMessageBox.alert;
   Vue.prototype.$shConfirm = CysMessageBox.confirm;
+  Vue.prototype.$cysMessage = CysMessage;
 }
 
 /* 支持使用标签的方式引入 */

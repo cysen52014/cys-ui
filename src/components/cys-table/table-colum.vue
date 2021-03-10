@@ -31,14 +31,23 @@
         <th
           v-for="(item2, index2) in item"
           :style="thStyle(item2, index2)"
+          :class="[
+            {
+              'cys-table--fiexd': item2.fixed,
+              'cys-table--left': item2.fixed === 'left',
+              'cys-table--right': item2.fixed === 'right',
+              'cys-table--shadow-left': item2.shadowLeft,
+              'cys-table--shadow-right': item2.shadowRight
+            }
+          ]"
           :key="index2"
           :colspan="item2.colspan"
           :rowspan="item2.rowspan"
-          :class="item.fixed ? 'fiexd ' + item.fixed : ''"
         >
           <cys-checkbox
             v-if="item2.prop === '_keySelection'"
-            v-model="item2.checked"
+            :value="table.checkedAll"
+            :indeterminate="table.indeterminate"
             @change="selectAll"
           />
           <span v-else>{{ item2.label }}</span>
@@ -103,7 +112,7 @@ export default {
           });
           return col;
         });
-        this.setColFixed(cols, true);
+        this.setShadow(cols, true);
         tKey = mut;
       } else {
         // 单表头
@@ -114,7 +123,7 @@ export default {
 
         cols = this.setColSelection(cols);
 
-        cols = this.setColFixed(cols);
+        cols = this.setShadow(cols);
 
         tKey = cols;
       }
@@ -137,8 +146,9 @@ export default {
           let fcol = {
             label: this.options.indexLabel || "序号",
             prop: "_keyIndex",
+            fixed: this.options.indexFixed ? "left" : "",
             style: {
-              width: this.options.indexWidth || "80px"
+              width: this.options.indexWidth || "60px"
             },
             rowspan: cols.length,
             colspan: 1
@@ -151,9 +161,9 @@ export default {
             {
               label: this.options.indexLabel || "序号",
               prop: "_keyIndex",
-              fixed: this.options.indexFixed || "",
+              fixed: this.options.indexFixed ? "left" : "",
               style: {
-                width: this.options.indexWidth || "80px"
+                width: this.options.indexWidth || "60px"
               }
             }
           ].concat(cols);
@@ -164,10 +174,10 @@ export default {
     setColSelection(cols, m) {
       if (this.options.isSelection) {
         if (m) {
-          let fcol = {
+          const fcol = {
             label: "",
             prop: "_keySelection",
-            fixed: this.options.selectionFixed || "",
+            fixed: this.options.selectionFixed ? "left" : "",
             checked: false,
             style: {
               width: this.options.selectionWidth || "60px"
@@ -175,7 +185,7 @@ export default {
             rowspan: cols.length,
             colspan: 1
           };
-          if (JSON.stringify(cols[0]).indexOf("_keyIndex") < 0) {
+          if (JSON.stringify(cols[0]).indexOf("_keySelection") < 0) {
             cols[0].unshift(fcol);
           }
         } else {
@@ -194,63 +204,43 @@ export default {
       }
       return cols;
     },
-    setColFixed(cols, m) {
-      if (JSON.stringify(cols).indexOf("fixed") > 0) {
-        const mid = [];
-        this.fixed.Rcols = [];
-        this.fixed.Lcols = [];
-        this.fixed.RD = [];
-        this.fixed.LD = [];
-
-        if (m) {
-          const cee = cols => {
-            cols.forEach((col, index) => {
-              if (col instanceof Array) {
-                cee(col);
-              } else {
-                if (col.fixed === "right") {
-                  this.fixed.Rcols.push(col);
-                } else if (col.fixed === "left") {
-                  this.fixed.Lcols.push(col);
-                }
-              }
-            });
-          };
-          cee(cols);
-        } else {
-          cols.forEach((col, index) => {
-            if (col.fixed === "right") {
-              cols.slice(index, 1);
-              this.fixed.Rcols.push(col);
-            } else if (col.fixed === "left") {
-              cols.slice(index, 1);
-              this.fixed.Lcols.push(col);
-            } else {
-              mid.push(col);
-            }
-          });
-          if (this.fixed.Lcols[this.fixed.Lcols.length - 1]) {
-            this.fixed.Lcols[this.fixed.Lcols.length - 1].shadowLeft = true;
-          }
-          if (this.fixed.Rcols[0]) {
-            this.fixed.Rcols[0].shadowRight = true;
-          }
-          cols = []
-            .concat(this.fixed.Lcols)
-            .concat(mid)
-            .concat(this.fixed.Rcols);
-        }
+    setShadow(cols, m) {
+      let CC = [];
+      let rtOne = false;
+      let ii = 0;
+      if (m) {
+        CC = cols[0];
+      } else {
+        CC = cols;
       }
-      return cols;
+      const a = JSON.stringify(CC).match(/fixed['":]+?left/ig);
+      CC.map((col, index) => {
+        col.shadowLeft = false;
+        col.shadowRight = false;
+        if (col.fixed === "left") {
+          ii++;
+          if(ii === a.length) {
+            col.shadowLeft = true;
+          }
+        } else if (col.fixed === "right") {
+          if (!rtOne) {
+            rtOne = true;
+            col.shadowRight = true;
+          }
+        }
+        return col;
+      });
+      return CC;
     },
-    tbWd(table, data) { // 固定列
+    tbWd(table, data) {
+      // 固定列
       const tbody = table.querySelector(".tbody-wrapper");
       const thead = table.querySelector(".thead-wrapper");
       const cl = thead.rows[0].cells;
       const cw = [];
       const cr = [];
       const RC = [...this.fixed.RD].reverse();
-      this.fixed.LD.forEach(r => {
+      this.fixed.LD.forEach((r, ii) => {
         const th = cl[r.index];
         const wd = parseInt(th.offsetWidth);
         const br = parseInt(
@@ -261,6 +251,7 @@ export default {
         );
         const ll = wd + br + bl;
         th.style.left = r.index === 0 ? 0 : eval(cw.join("+")) + "px";
+
         data.forEach((row, ii) => {
           const td = tbody.rows[ii].cells[r.index];
           const twd = parseInt(td.offsetWidth);
@@ -313,7 +304,16 @@ export default {
       this.fixed.RD = [];
       this.fixed.LD = [];
 
-      this.cols.map((col, index) => {
+      let CC = [];
+
+      if (this.isMultiHead) {
+        console.log(this.cols, "this.cols===");
+        CC = this.cols[0];
+      } else {
+        CC = this.cols;
+      }
+
+      CC.map((col, index) => {
         if (col.fixed === "left") {
           this.fixed.LD.push({
             index: index,

@@ -36,10 +36,12 @@ import Emitter from "../../mixins/emitter.js";
 import Input from "./input";
 import Select from "./select";
 import Date from "./date";
+import Cascader from "./cascader";
 const components = {
   Input: Input,
   Select: Select,
-  Date: Date
+  Date: Date,
+  Cascader: Cascader
 };
 export default {
   name: "CysFormSearch",

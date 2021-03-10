@@ -60,6 +60,11 @@ export default {
       name: 'cys-message-box',
       title: "CysMessageBox 消息窗口"
     },
+    'cys-message': {
+      path: 'cys-message',
+      name: 'cys-message',
+      title: "CysMessage 消息提示"
+    },
     'cys-circle': {
       path: 'cys-circle',
       name: 'cys-circle',

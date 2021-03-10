@@ -111,7 +111,6 @@
       </div>
     </div>
     <!-- 时间选择结束 -->
-
     <!-- 日期时间区间选择开始 -->
     <div v-show="showView === 'datetimerange'">
       <cys-date-range
@@ -168,7 +167,8 @@ export default {
       dateValue: this.value && this.value instanceof String ? moment(this.value) : moment(),
       selectedDateValue: this.value && this.value instanceof String ? moment(this.value) : null,
       showView: this.type,
-      isSwitchMonth: false
+      isSwitchMonth: false,
+      rangePos: "" 
     };
   },
   computed: {

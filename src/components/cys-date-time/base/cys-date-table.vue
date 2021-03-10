@@ -33,7 +33,8 @@ export default {
       type: moment,
       required: true
     },
-    range: {},
+    range: Object,
+    rgk: String,
     value: {
       type: moment
     },
@@ -98,7 +99,6 @@ export default {
           ) {
             cell.type = "select";
           }
-
           if (
             this.range &&
             date.isAfter(this.range.start) &&
@@ -116,12 +116,10 @@ export default {
               cell.between = true;
             }
           }
-
           // 判断该日期是否禁用
           if (this.disabledDate) {
             cell.disabled = this.disabledDate(moment(date));
           }
-
           // 设置时间
           cell.text = date.date();
           // 完整时间存储
@@ -145,12 +143,10 @@ export default {
 </script>
 <style lang="stylus">
 @import '../../../styles/variable';
-
 .cys-date-table {
     user-select: none;
     border-collapse: collapse;
     font-size: 14px;
-
     th {
         text-align: center;
         padding: 5px;
@@ -160,7 +156,6 @@ export default {
         font-weight: 400;
         font-style: normal;
     }
-
     td {
         width: 40px;
         height: 40px;
@@ -169,7 +164,6 @@ export default {
         text-align: center;
         cursor: pointer;
         position: relative;
-
         &.cys-date-table--prev-month, &.cys-date-table--next-month {
             color: $--date-time-prev-next-cell;
             cursor: not-allowed;
@@ -182,33 +176,27 @@ export default {
                cursor: not-allowed;
             }
         }
-
         &.cys-date-table--prev-month.cys-date-table--between, &.cys-date-table--next-month.cys-date-table--between {
           background: none;
         }
-
         &.cys-date-table--today {
             color: $--date-time-today-color;
             font-weight: bold;
         }
-
         &:hover {
             div {
                 background-color: $--date-time-cell-hover-background-color;
             }
         }
-
         &.cys-date-table--select {
             div {
                 background-color: $--date-time-select-background-color;
                 color: $--date-time-select-color;
-
                 &:hover {
                     background: $--date-time-select-background-color;
                 }
             }
         }
-
         div {
             height: 30px;
             width: 30px;
@@ -218,16 +206,13 @@ export default {
             text-align: center;
         }
     }
-
     .cys-date-table--between {
         background-color: #f2f6fc;
     }
-
     .cys-date-table--disabled {
         padding-left: 0;
         padding-right: 0;
         cursor: not-allowed;
-
         div {
             cursor: not-allowed;
             color: $--date-time-disabled-color;
@@ -236,16 +221,13 @@ export default {
             width: auto;
             border: 1px solid transparent;
         }
-
         &:hover {
             div {
                 background-color: $--date-time-disabled-background-color;
             }
         }
-
         &.cys-date-table--today {
             padding: 0;
-
             div::before {
                 content: ' ';
                 position: absolute;

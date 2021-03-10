@@ -151,7 +151,8 @@ export default {
         margin: 0;
         max-height: 230px;
         box-sizing: border-box;
-        overflow: auto;
+        overflow: hidden;
+        overflow-y: auto;
 
         .cys-select--dropdown-empty {
             list-style: none;

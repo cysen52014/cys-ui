@@ -31,6 +31,7 @@
       <div class="cys-calendar--body">
         <cys-date-table
           :range="range"
+          :rgk="'start'"
           :date-value="startTime"
           @date-click="handleStartDateClick"
         ></cys-date-table>
@@ -65,6 +66,7 @@
       <div class="cys-calendar--body">
         <cys-date-table
           :range="range"
+          :rgk="'end'"
           :date-value="endTime"
           @date-click="handleEndDateClick"
         ></cys-date-table>
@@ -76,6 +78,7 @@
 import CysDateTable from "./cys-date-table";
 import CysTimeTable from "./cys-time-table";
 import moment from "moment";
+import Vue from "vue";
 export default {
   props: {
     type: {
@@ -109,9 +112,9 @@ export default {
     CysTimeTable
   },
   created() {
-    const startTime =
+    let startTime =
       this.value && this.value.length > 0 ? moment(this.value[0]) : moment();
-    const endTime =
+    let endTime =
       this.value && this.value.length > 0
         ? moment(this.value[1])
         : moment()
@@ -122,6 +125,7 @@ export default {
       start: startTime,
       end: endTime
     };
+
     this.startDate = moment(this.range.start).format("YYYY-MM-DD");
     this.startDateTime = moment(this.startDate)
       .startOf("day")
@@ -131,8 +135,27 @@ export default {
       .endOf("day")
       .format("HH:mm:ss");
     if (this.range.start && this.range.end) {
-      this.startTime = moment(this.range.start);
-      this.endTime = moment(this.range.end);
+      if (
+        moment(startTime)
+          .startOf("month")
+          .isSame(moment(endTime).startOf("month"), "day")
+      ) {
+        // 判断是否在同一个月
+        if (Vue.$dateRangePosition === "left") {
+          this.startTime = moment(this.range.start);
+          this.endTime = moment(endTime)
+            .subtract(-1, "months")
+            .startOf("month");
+        } else if (Vue.$dateRangePosition === "right") {
+          this.startTime = moment(startTime)
+            .subtract(1, "months")
+            .startOf("month");
+          this.endTime = moment(this.range.end);
+        }
+      } else {
+        this.startTime = moment(this.range.start);
+        this.endTime = moment(this.range.end);
+      }
     }
   },
   watch: {
@@ -281,6 +304,7 @@ export default {
           this.range.end = val;
         } else {
           this.range.start = val;
+          this.range.end = val;
         }
       }
       if (moment(this.range.end).isBefore(this.range.start)) {
@@ -288,6 +312,17 @@ export default {
         this.range.end = this.range.start;
         this.range.start = end;
       }
+
+      if (
+        moment(this.range.start).isAfter(moment(this.endTime).startOf("month"))
+      ) {
+        Vue.$dateRangePosition = "right";
+      } else if (
+        moment(this.range.end).isBefore(moment(this.startTime).endOf("month"))
+      ) {
+        Vue.$dateRangePosition = "left";
+      }
+
       this.gate = [];
       if (this.type === "datetimerange") {
         this.gate = [
