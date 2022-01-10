@@ -48,7 +48,16 @@ export default {
   },
   computed: {
     fieldValue() {
-      return this.form.value[this.prop];
+      const ap = String(this.prop).split(".");
+      if (ap.length > 0) {
+        let ab = this.form.value;
+        ap.forEach(a => {
+          ab = ab[a];
+        });
+        return ab;
+      } else {
+        return this.form.value[this.prop];
+      }
     },
     bW() {
       const wd =

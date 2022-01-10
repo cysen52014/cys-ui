@@ -28,10 +28,11 @@ import CysForm from "./components/cys-form/form.vue";
 import CysFormItem from "./components/cys-form/formItem.vue";
 import CysCascader from "./components/cys-cascader/index.vue";
 import CysMessage from "./components/cys-message/message";
+import CysScrollbar from "./components/cys-scrollbar/index";
+import CysSwitch from "./components/cys-switch/index";
+import CyiTable from "./components/table/index";
 
-
-
-const components = [
+const components = {
   CysCheckbox,
   CysCheckboxGroup,
   CysRadio,
@@ -59,18 +60,24 @@ const components = [
   CysFormSearch,
   CysForm,
   CysFormItem,
-  CysCascader
-];
+  CysCascader,
+  CysScrollbar,
+  CysSwitch,
+  CyiTable
+};
 
-const install = function(Vue) {
-  components.map(component => {
-    Vue.component(component.name, component);
+const install = function(Vue, opts) {
+  Object.keys(components).map(key => {
+    Vue.component(components[key].name, components[key]);
   })
+  Vue.prototype.$uiConfig = opts || {}
   Vue.prototype.$dateRangePosition = "";
   Vue.prototype.$shAlert = CysMessageBox.alert;
   Vue.prototype.$shConfirm = CysMessageBox.confirm;
   Vue.prototype.$cysMessage = CysMessage;
 }
+
+console.log(components, "components");
 
 /* 支持使用标签的方式引入 */
 if (typeof window !== 'undefined' && window.Vue) {
@@ -79,6 +86,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 export default {
-  install
+  install,
+  components
   // ...如果还有的话继续添加
 }

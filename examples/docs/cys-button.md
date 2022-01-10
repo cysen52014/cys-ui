@@ -19,11 +19,11 @@
 
 ```html
 <template>
-    <cys-button left-icon="cysicon icon-icon_shipinjiankong_zengjia"></cys-button>
-    <cys-button left-icon="cysicon icon-icon_list_edit"></cys-button>
-    <cys-button left-icon="cysicon icon-icon_list_delete"></cys-button>
-    <cys-button left-icon="cysicon icon-icon_list_edit">编辑</cys-button>
-    <cys-button right-icon="cysicon icon-icon_list_edit">编辑</cys-button>
+    <cys-button left-icon="cysicon icon-anonymous"></cys-button>
+    <cys-button left-icon="cysicon icon-bianji"></cys-button>
+    <cys-button left-icon="cysicon icon-delete"></cys-button>
+    <cys-button left-icon="cysicon icon-bianji">编辑</cys-button>
+    <cys-button right-icon="cysicon icon-bianji">编辑</cys-button>
 </template>
 ```
 :::
@@ -49,12 +49,12 @@
 
 ```html
 <template>
-    <cys-button left-icon="cysicon icon-icon_shipinjiankong_zengjia" circle></cys-button>
-    <cys-button left-icon="cysicon icon-icon_list_edit" circle plain></cys-button>
+    <cys-button left-icon="cysicon icon-anonymous" circle></cys-button>
+    <cys-button left-icon="cysicon icon-bianji" circle plain></cys-button>
     <cys-button circle>编辑</cys-button>
     <cys-button circle plain>编辑</cys-button>
-    <cys-button left-icon="cysicon icon-icon_list_edit" circle>编辑</cys-button>
-    <cys-button right-icon="cysicon icon-icon_list_edit" circle>编辑</cys-button>
+    <cys-button left-icon="cysicon icon-bianji" circle>编辑</cys-button>
+    <cys-button right-icon="cysicon icon-bianji" circle>编辑</cys-button>
 </template>
 ```
 

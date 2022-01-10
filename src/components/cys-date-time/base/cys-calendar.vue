@@ -12,11 +12,11 @@
     <div v-show="showView === 'date'">
       <div class="cys-calendar--header">
         <i
-          class="cysicon icon-arrow_doubleleft cys-calendar--button cys-calendar--button-prev-year"
+          class="cysicon icon-zuoshuangjiantou cys-calendar--button cys-calendar--button-prev-year"
           @click="handlePrevYear"
         ></i>
         <i
-          class="cysicon icon-arrow_left cys-calendar--button cys-calendar--button-prev-month"
+          class="cysicon icon-angleleft cys-calendar--button cys-calendar--button-prev-month"
           @click="handlePrevMonth"
         ></i>
         <span
@@ -28,11 +28,11 @@
           >{{ month }}月</span
         >
         <i
-          class="cysicon icon-arrow_right cys-calendar--button cys-calendar--button-next-month"
+          class="cysicon icon-angleright cys-calendar--button cys-calendar--button-next-month"
           @click="handleNextMonth"
         ></i>
         <i
-          class="cysicon icon-arrow_doubleright cys-calendar--button cys-calendar--button-next-year"
+          class="cysicon icon-zuoshuangjiantou1 cys-calendar--button cys-calendar--button-next-year"
           @click="handleNextYear"
         ></i>
       </div>
@@ -51,14 +51,14 @@
     <div v-show="showView === 'month'">
       <div class="cys-calendar--header">
         <i
-          class="cysicon icon-arrow_doubleleft cys-calendar--button cys-calendar--button-prev-year"
+          class="cysicon icon-angleleft cys-calendar--button cys-calendar--button-prev-year"
           @click="handlePrevYear"
         ></i>
         <span class="cys-calendar--header-label" @click="switchYearSelect(true)"
           >{{ year }}年</span
         >
         <i
-          class="cysicon icon-arrow_doubleright cys-calendar--button cys-calendar--button-next-year"
+          class="cysicon icon-angleright cys-calendar--button cys-calendar--button-next-year"
           @click="handleNextYear"
         ></i>
       </div>
@@ -77,14 +77,14 @@
     <div v-show="showView === 'year'">
       <div class="cys-calendar--header">
         <i
-          class="cysicon icon-arrow_doubleleft cys-calendar--button cys-calendar--button-prev-year"
+          class="cysicon icon-angleleft cys-calendar--button cys-calendar--button-prev-year"
           @click="handlePrevPageYear"
         ></i>
         <span class="cys-calendar--header-label"
           >{{ startYear }}年 - {{ endYear }}年</span
         >
         <i
-          class="cysicon icon-arrow_doubleright cys-calendar--button cys-calendar--button-next-year"
+          class="cysicon icon-angleright cys-calendar--button cys-calendar--button-next-year"
           @click="handleNextPageYear"
         ></i>
       </div>
@@ -112,7 +112,7 @@
     </div>
     <!-- 时间选择结束 -->
     <!-- 日期时间区间选择开始 -->
-    <div v-show="showView === 'datetimerange'">
+    <div v-if="showView === 'datetimerange'">
       <cys-date-range
         :type="type"
         v-model="value"
@@ -121,11 +121,12 @@
     </div>
     <!-- 日期时间区间选择结束 -->
     <!-- 日期区间选择开始 -->
-    <div v-show="showView === 'daterange'">
+    <div v-if="showView === 'daterange'">
       <cys-date-range
         :type="type"
         v-model="value"
         @date-select="selectRangeDate"
+        :disabled-date="disabledDate"
       ></cys-date-range>
     </div>
     <!-- 日期区间选择结束 -->

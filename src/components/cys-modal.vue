@@ -1,12 +1,12 @@
 <template>
   <transition name="modal-fade">
     <div class="cys-modal"
-      v-show="value">
+      v-if="value">
       <div class="cys-modal-box"
         :style="style">
         <div class="cys-modal-header">
           <div class="cys-modal-title">{{title}}</div>
-          <i class="cys-modal-close cysicon icon-icon_close"
+          <i class="cys-modal-close cysicon icon-guanbi"
             v-show="showClose"
             @click="close"></i>
         </div>
@@ -113,7 +113,7 @@ export default {
     position: absolute;
     right: 0;
     top: -2px;
-    font-size: 20px !important;
+    font-size: 18px !important;
     cursor: pointer;
     color: $--modal-header-close-color;
   }

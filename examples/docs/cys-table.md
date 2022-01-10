@@ -4,6 +4,9 @@
       deleted() {
         console.log("deleted");
       },
+      sortChange(val) {
+        console.log("sortChange", val);
+      },
       toggleRowExpansion(row) {
         row.isOpen = !row.isOpen
         this.$refs["expanTable"].toggleRowExpansion(row, row.isOpen);
@@ -21,7 +24,8 @@
             column: [
               {
                 label: "表头列一",
-                prop: "aa"
+                prop: "aa",
+                expand: true
               },
               {
                 label: "表头列二",
@@ -33,39 +37,28 @@
               },
               {
                 label: "表头列三",
-                prop: "cc"
+                prop: "cc",
+                fixed: "right"
               }
             ]
           },
-          method: {
-            interface: () => {
-              return {
-                errorCode: "0",
-                data: [
-                  {
-                    aa: "列一",
-                    bb: "列二",
-                    cc: "列三"
-                  },
-                  {
-                    aa: "列一",
-                    bb: "列二",
-                    cc: "列三"
-                  },
-                  {
-                    aa: "列一",
-                    bb: "列二",
-                    cc: "列三"
-                  }
-                ]
-              };
-            }, // 调用表格数据接口方法
-            parmas: {}, // 参数
-            cVal: 0, // 接口返回参数值 默认0
-            cKey: "errorCode", // 接口返回参数key 默认errorCode
-            failed: () => {}, // 接口失败回调
-            success: () => {} // 接口成功回调
-          }
+          data: [
+            {
+              aa: "列一",
+              bb: "列二",
+              cc: "列三"
+            },
+            {
+              aa: "列一",
+              bb: "列二",
+              cc: "列三"
+            },
+            {
+              aa: "列一",
+              bb: "列二",
+              cc: "列三"
+            }
+          ]
         },
         options1: {
           isPagination: false,
@@ -76,11 +69,13 @@
                 prop: "aa",
                 style: {
                   width: "100px"
-                }
+                },
+                sort: true
               },
               {
                 label: "表头列二",
-                prop: "bb"
+                prop: "bb",
+                sort: true
               },
               {
                 label: "表头列三",
@@ -254,7 +249,7 @@
               return {
                 errorCode: "0",
                 data: {
-                  total: 19,
+                  total: 1,
                   list: [
                     {
                       aa: "列1一",
@@ -381,8 +376,8 @@
                 {id:"24",label:"环比",prop:"hbM"},
                 {id:"31",label:"实际",prop:"actY"},
                 {id:"32",label:"偏差",prop:"diffY"},
-                {id:"33",label:"同比",prop:"tbY"},
-                {id:"34",label:"环比",prop:"hbY"}
+                {id:"33",label:"同比",prop:"tbY", sort: true },
+                {id:"34",label:"环比",prop:"hbY", sort: true}
             ]]
           },
           method: {
@@ -410,7 +405,7 @@
                     actY: "44",
                     diffY: "55",
                     tbY: "6666",
-                    hbY: "788"
+                    hbY: "1899"
                   },
                   {
                     id: 3,
@@ -529,7 +524,8 @@
                     actY: "44",
                     diffY: "55",
                     tbY: "6666",
-                    hbY: "788"
+                    hbY: "788",
+                    children: [ { id: "211", label: "实际", prop: "actM"}]
                   },
                   {
                     id: 2,
@@ -576,8 +572,8 @@
 
 ```html
 <template>
-  <cys-table :options="options" :striped="true" :border="true"
-    ><div slot="bb" slot-scope="scope">插槽</div></cys-table
+  <cys-table row-key="aa" :options="options" :data="options.data" :show-header="false" :striped="true" :border="true"
+    ><div slot="expand" slot-scope="scope">wcwwe</div><div slot="bb" slot-scope="scope">插槽</div></cys-table
   >
 </template>
 <script>
@@ -667,7 +663,8 @@
                 prop: "aa",
                 style: {
                   width: "100px"
-                }
+                },
+                sort: true
               },
               {
                 label: "表头列二",
@@ -858,7 +855,7 @@
 
 ```html
 <template>
-  <cys-table :options="options3" :striped="true" :border="true" @change="selectionChange"></cys-table>
+  <cys-table :options="options3" :striped="true" :border="true" @selection-change="selectionChange"></cys-table>
 </template>
 <script>
   export default {
@@ -957,6 +954,7 @@
     :options="options4"
     :striped="true"
     :border="true"
+    @sort-change="sortChange"
     ></cys-table>
 </template>
 <script>

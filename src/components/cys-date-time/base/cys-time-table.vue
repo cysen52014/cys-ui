@@ -91,9 +91,9 @@ export default {
         },
         scrollToTop() {
             this.$nextTick(() => {
-                this.$refs.hourBox.scrollTop = (this.selectHour - 1) * 28
-                this.$refs.minuteBox.scrollTop = (this.selectMinute - 1) * 28
-                this.$refs.secondBox.scrollTop = (this.selectSecond - 1) * 28
+                this.$refs.hourBox && (this.$refs.hourBox.scrollTop = (this.selectHour - 1) * 28)
+                this.$refs.minuteBox && (this.$refs.minuteBox.scrollTop = (this.selectMinute - 1) * 28)
+                this.$refs.secondBox && (this.$refs.secondBox.scrollTop = (this.selectSecond - 1) * 28)
             });
         },
         selectTime() {

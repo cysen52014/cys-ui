@@ -7,7 +7,7 @@
         }]"
             :style="{ 'padding-left': paddingLeft }"
             @click="handleClickNode">
-            <span :class="['cysicon','icon-icon_tree_collapse','cys-tree-node--icon',{
+            <span :class="['cysicon','icon-caretright','cys-tree-node--icon',{
                 'cys-tree-node--leaf':isLeaf,
                 'cys-tree-node--expanded-icon':expanded,
                 'cys-tree-node--visible-icon':!tree.showCollapse
@@ -153,7 +153,7 @@ export default {
             padding: 4px;
             cursor: pointer;
             color: $--tree-node-icon-color;
-            font-size: 14px;
+            font-size: 20px;
             transition: transform 0.3s ease-in-out;
 
             &.cys-tree-node--leaf {

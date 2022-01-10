@@ -16,7 +16,7 @@
         ><i
           v-if="showIcon"
           slot="prefix"
-          class="cysicon icon-icon_riqixuanze cys-date-picker--icon"
+          class="cysicon icon-rili-copy cys-date-picker--icon"
         ></i
       ></cys-input>
       <span>至</span>
@@ -41,7 +41,7 @@
         <i
           v-if="showIcon"
           slot="prefix"
-          class="cysicon icon-icon_riqixuanze cys-date-picker--icon"
+          class="cysicon icon-rili-copy cys-date-picker--icon"
         ></i>
       </cys-input>
     </div>
@@ -94,14 +94,7 @@ export default {
   data() {
     return {
       visible: false,
-      selectDateValue:
-        this.value instanceof Array
-          ? this.value.length > 0
-            ? [moment(this.value[0]), moment(this.value[1])]
-            : []
-          : this.value
-          ? moment(this.value)
-          : null,
+      selectDateValue: null,
       dropdownComponent: "",
       dateTimeType: "date",
       startDateText: "",
@@ -117,10 +110,7 @@ export default {
     placeholder: String,
     disabled: Boolean,
     value: {
-      type: Array | String,
-      default() {
-        return [];
-      }
+      type: Array | String
     },
     type: {
       type: String,
@@ -262,16 +252,42 @@ export default {
       this.$emit("change", this.selectDateValue);
       this.$emit("input", this.selectDateValue);
       e.stopPropagation();
+    },
+    setDefVal(val) {
+      let date = null;
+      if (this.type === "time") {
+        date = moment(moment().format("YYYY-MM-DD") + " " + this.value);
+      } else {
+        date =
+          this.value instanceof Array
+            ? this.value.length > 0
+              ? [moment(this.value[0]), moment(this.value[1])]
+              : []
+            : this.value
+            ? moment(this.value)
+            : null;
+      }
+      return date;
     }
   },
   watch: {
     selectDateValue: {
       handler(newName, oldName) {
-        if (this.type === "daterange" || this.type === "datetimerange") {
-          this.selectStartDateText();
-          this.selectEndDateText();
-        } else {
-          this.selectDateText();
+        if (newName) {
+          if (this.type === "daterange" || this.type === "datetimerange") {
+            this.selectStartDateText();
+            this.selectEndDateText();
+            if (newName.length > 0) {
+              const s = this.getSelectDateValue(newName[0]);
+              const e = this.getSelectDateValue(newName[1]);
+              this.$emit("change", [s, e]);
+            } else {
+              this.$emit("change", []);
+            }
+          } else {
+            this.selectDateText();
+            this.$emit("change", this.getSelectDateValue(newName));
+          }
         }
       },
       immediate: true
@@ -281,15 +297,13 @@ export default {
         this.dropdownComponent = "cys-calendar";
       }
     },
-    value() {
-      this.selectDateValue =
-        this.value instanceof Array
-          ? this.value.length > 0
-            ? [moment(this.value[0]), moment(this.value[1])]
-            : []
-          : this.value
-          ? moment(this.value)
-          : null;
+    value: {
+      handler(newName, oldName) {
+        if (newName) {
+          this.selectDateValue = this.setDefVal(newName);
+        }
+      },
+      immediate: true
     }
   }
 };
@@ -299,15 +313,20 @@ export default {
 
 .cys-date-picker {
     .cys-date-picker--icon {
-        color: $--date-time-icon-color;
+        color: #c0c4cc;
+        font-size 16px;
+        position relative
+        top -1px
     }
 
     .cys-date-range-input {
       .cys-input {
-        width: 237px;
+        width: auto;
+        display: inline-block;
         input {
           border: none;
           text-align center;
+          width: 221px
         }
       }
       white-space nowrap;

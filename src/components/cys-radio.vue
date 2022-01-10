@@ -42,6 +42,7 @@ export default {
             },
             set(val) {  
                 this.dispatch('CysRadioGroup', 'input', [val]);
+                this.dispatch('CysRadioGroup', 'change', [val]);
             }
         },
         isGroup() {

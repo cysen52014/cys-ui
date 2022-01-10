@@ -51,7 +51,7 @@
         </template>
         <i
           v-else
-          class="cysicon icon-icon_xiaofucengguanbishanchu cys-input--clear-icon"
+          class="cysicon icon-clear cys-input--clear-icon"
           @click="handleClear"
         ></i>
       </span>
@@ -235,8 +235,6 @@ export default {
 
             .cys-input--clear-icon {
                 transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-                background-color: white;
-
                 &:hover {
                     color: $--input-hover-clear-icon;
                 }
@@ -253,7 +251,7 @@ export default {
             position: absolute;
             height: 100%;
             left: 8px;
-            top: 0;
+            top: -1px;
             text-align: center;
             color: $--input-fix-color;
             transition: all 0.3s;

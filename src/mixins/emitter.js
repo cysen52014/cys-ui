@@ -14,12 +14,12 @@ export default {
     // 事件派发，找到指定的所有父级节点直到顶级，并且触发指定的事件
     dispatch(componentName, eventName, params) {
       var parent = this.$parent || this.$root;
-      var name = parent.$options.componentName;
+      var name = parent.$options.componentName || parent.$options.name;;
       while (parent && (!name || name !== componentName)) {
         parent = parent.$parent;
 
         if (parent) {
-          name = parent.$options.componentName;
+          name = parent.$options.componentName || parent.$options.name;
         }
       }
       if (parent) {
@@ -28,12 +28,12 @@ export default {
     },
     dispatchByMethod(componentName, eventName, params) {
       var parent = this.$parent || this.$root;
-      var name = parent.$options.componentName;
+      var name = parent.$options.componentName || parent.$options.name;;
       while (parent && (!name || name !== componentName)) {
         parent = parent.$parent;
 
         if (parent) {
-          name = parent.$options.componentName;
+          name = parent.$options.componentName || parent.$options.name;
         }
       }
       if (parent) {
@@ -46,9 +46,12 @@ export default {
     },
     dispatchComponentByName(componentName) {
       var parent = this.$parent || this.$root;
-      var name = parent.$options.componentName;
+      var name = parent.$options.componentName || parent.$options.name;
       while (parent && (!name || name !== componentName)) {
         parent = parent.$parent;
+        if (parent) {
+          name = parent.$options.componentName || parent.$options.name;
+        }
       }
       return parent;
     }

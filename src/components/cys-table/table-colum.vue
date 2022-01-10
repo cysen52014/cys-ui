@@ -22,7 +22,22 @@
             :indeterminate="table.indeterminate"
             @change="selectAll"
           />
-          <span class="td" v-else>{{ item.label }}</span>
+          <span class="td" @click="item.sort ? changSort(item) : ''" v-else
+            >{{ item.label }}
+            <div
+              v-if="item.sort"
+              class="v-sort"
+              :class="[
+                {
+                  asce: item.sort === 'asce',
+                  desc: item.sort === 'desc'
+                }
+              ]"
+            >
+              <i class="u" @click.stop="asce(item)"></i
+              ><i class="d" @click.stop="desc(item)"></i>
+            </div>
+          </span>
         </th>
       </tr>
     </thead>
@@ -50,7 +65,21 @@
             :indeterminate="table.indeterminate"
             @change="selectAll"
           />
-          <span v-else>{{ item2.label }}</span>
+          <span @click="item.sort ? changSort(item2) : ''" v-else
+            >{{ item2.label }}
+            <div
+              class="v-sort"
+              :class="[
+                {
+                  asce: item2.sort === 'asce',
+                  desc: item2.sort === 'desc'
+                }
+              ]"
+              v-if="item2.sort"
+            >
+              <i class="u" @click.stop="asce(item2)"></i
+              ><i class="d" @click.stop="desc(item2)"></i></div
+          ></span>
         </th>
         <!-- <th v-else></th> -->
       </tr>
@@ -137,6 +166,55 @@ export default {
     this.$on("setColumFixd", this.setColumFixd);
   },
   methods: {
+    changSort(item) {
+      const a = ["asce", "desc", "true"];
+      let ii = 0;
+      a.forEach((r, i) => {
+        if(String(item.sort) === r) {
+          ii = i + 1;
+          if(ii > 2) {
+            ii = 0;
+          }
+        }
+      })
+      item.sort = a[ii];
+      item.sortKey = item.prop;
+      this.bS(item.sortKey);
+      const fn = a[ii] === "true" ? "asce" : a[ii];
+      this.table[fn](item);
+    },
+    bS(feild) {
+      let cols = (this.options.thead.column && this.options.thead.column) || [];
+      if (JSON.stringify(cols).indexOf("cols") > 0) {
+        this.options.thead.column = cols.map((col, index) => {
+          col.forEach((col2, index2) => {
+            if (col2.sort && col2.prop !== feild) {
+              col2.sort = true;
+            }
+          });
+          return col;
+        });
+      } else {
+        this.options.thead.column = this.options.thead.column.map(r => {
+          if (r.sort && r.prop !== feild) {
+            r.sort = true;
+          }
+          return r;
+        });
+      }
+    },
+    asce(item) {
+      item.sort = item.sort === "asce" ? true : "asce";
+      item.sortKey = item.prop;
+      this.bS(item.sortKey);
+      this.table.asce(item);
+    },
+    desc(item) {
+      item.sort = item.sort === "desc" ? true : "desc";
+      item.sortKey = item.prop;
+      this.bS(item.sortKey);
+      this.table.desc(item);
+    },
     selectAll(val) {
       this.table.callSelectAll(val);
     },
@@ -213,13 +291,13 @@ export default {
       } else {
         CC = cols;
       }
-      const a = JSON.stringify(CC).match(/fixed['":]+?left/ig);
+      const a = JSON.stringify(CC).match(/fixed['":]+?left/gi);
       CC.map((col, index) => {
         col.shadowLeft = false;
         col.shadowRight = false;
         if (col.fixed === "left") {
           ii++;
-          if(ii === a.length) {
+          if (ii === a.length) {
             col.shadowLeft = true;
           }
         } else if (col.fixed === "right") {
@@ -281,6 +359,7 @@ export default {
             ? 0
             : eval(cr.join("+")) + "px";
         data.forEach((row, ii) => {
+          if (row.expand) return;
           const td = tbody.rows[ii].cells[r.index];
           const twd = parseInt(td.offsetWidth);
           const tbr = parseInt(
@@ -307,7 +386,6 @@ export default {
       let CC = [];
 
       if (this.isMultiHead) {
-        console.log(this.cols, "this.cols===");
         CC = this.cols[0];
       } else {
         CC = this.cols;

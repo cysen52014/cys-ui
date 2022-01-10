@@ -1,5 +1,11 @@
 <template>
-  <div class="cys-form--inline">
+  <div
+    class="cys-form--inline"
+    v-if="
+      option.cashType !== 'hide' ||
+        (option.cashType === 'hide' && option.visible)
+    "
+  >
     <div class="cys-form-label" v-html="option.label"></div>
     <div class="cys-form-content">
       <cys-select
@@ -26,7 +32,9 @@
 export default {
   name: "CysFormSelect",
   componentName: "CysFormSelect",
+  inject: ["parent"],
   props: {
+    current: Number,
     option: {
       type: Object,
       default: {}
@@ -43,6 +51,14 @@ export default {
       return this.list;
     }
   },
+  watch: {
+    "option.options": {
+      handler(val) {
+        this.list = val || [];
+      },
+      deep: true
+    }
+  },
   created() {
     if (!this.option.interface) {
       this.getOptions();
@@ -54,7 +70,8 @@ export default {
         if (this.option.cashName) {
           if (
             this.cashValue !==
-            window.__storevueappdate__state_formData[this.option.cashName]
+              window.__storevueappdate__state_formData[this.option.cashName] ||
+            window.__storevueappdate__state_field !== this.option.field
           ) {
             this.list = [];
             this.getOptions();
@@ -93,14 +110,24 @@ export default {
         this.list = this.option.options;
       }
     },
+    clearCashYN(val) {
+      if (this.cva !== val) {
+        const ca = this.option.ca;
+        if (ca) {
+          this.parent.setCashYN(ca, val);
+        }
+      }
+    },
     change(val) {
       const obj = {};
       if (this.option.obj2Array) {
         obj[this.option.field] = val ? val.join(",") : "";
       } else {
-        obj[this.option.field] = val ? val : "";
+        obj[this.option.field] = String(val) ? val : "";
       }
-      this.$emit("change", obj);
+      this.clearCashYN(val);
+      this.$emit("change", obj, this.option.field);
+      this.cva = val;
     }
   }
 };

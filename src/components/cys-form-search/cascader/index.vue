@@ -1,5 +1,5 @@
 <template>
-  <div class="cys-form--inline">
+  <div class="cys-form--inline" v-if="option.cashType === 'hide' && option.visible">
     <div class="cys-form-label" v-html="option.label"></div>
     <div class="cys-form-content">
       <cys-cascader
@@ -19,7 +19,9 @@
 export default {
   name: "CysFormCascader",
   componentName: "CysFormCascader",
+  inject: ["parent"],
   props: {
+    current: Number,
     option: {
       type: Object,
       default: {}
@@ -47,7 +49,8 @@ export default {
         if (this.option.cashName) {
           if (
             this.cashValue !==
-            window.__storevueappdate__state_formData[this.option.cashName]
+              window.__storevueappdate__state_formData[this.option.cashName] ||
+            window.__storevueappdate__state_field !== this.option.field
           ) {
             this.list = [];
             this.getOptions();
@@ -85,6 +88,14 @@ export default {
         this.list = this.option.options;
       }
     },
+    clearCashYN (val) {
+      if(this.cva !== val) {
+        const ca = this.option.ca;
+        if(ca) {
+          this.parent.setCashYN(ca, val);
+        }
+      }
+    },
     change(val) {
       const obj = {};
       obj[this.option.field] = val;
@@ -93,7 +104,9 @@ export default {
       } else {
         obj[this.option.field] = val;
       }
-      this.$emit("change", obj);
+      this.clearCashYN(val);
+      this.$emit("change", obj, this.option.field);
+      this.cva = val;
     }
   }
 };

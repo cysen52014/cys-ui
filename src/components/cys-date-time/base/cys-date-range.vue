@@ -14,11 +14,11 @@
       </div>
       <div class="cys-calendar--header">
         <i
-          class="cysicon icon-arrow_doubleleft cys-calendar--button cys-calendar--button-prev-year"
+          class="cysicon icon-zuoshuangjiantou cys-calendar--button cys-calendar--button-prev-year"
           @click="handlePrevYear"
         ></i>
         <i
-          class="cysicon icon-arrow_left cys-calendar--button cys-calendar--button-prev-month"
+          class="cysicon icon-angleleft cys-calendar--button cys-calendar--button-prev-month"
           @click="handlePrevMonth"
         ></i>
         <span class="cys-calendar--header-label nocursor"
@@ -34,6 +34,7 @@
           :rgk="'start'"
           :date-value="startTime"
           @date-click="handleStartDateClick"
+          :disabled-date="setDisabledDate"
         ></cys-date-table>
       </div>
     </div>
@@ -55,11 +56,11 @@
           >{{ monthEnd }}月</span
         >
         <i
-          class="cysicon icon-arrow_right cys-calendar--button cys-calendar--button-next-month"
+          class="cysicon icon-angleright cys-calendar--button cys-calendar--button-next-month"
           @click="handleNextMonth"
         ></i>
         <i
-          class="cysicon icon-arrow_doubleright cys-calendar--button cys-calendar--button-next-year"
+          class="cysicon icon-zuoshuangjiantou1 cys-calendar--button cys-calendar--button-next-year"
           @click="handleNextYear"
         ></i>
       </div>
@@ -69,6 +70,7 @@
           :rgk="'end'"
           :date-value="endTime"
           @date-click="handleEndDateClick"
+          :disabled-date="setDisabledDate"
         ></cys-date-table>
       </div>
     </div>
@@ -85,6 +87,10 @@ export default {
       type: String,
       required: true,
       default: ""
+    },
+    disabledDate: {
+      start: [],
+      ent: []
     },
     value: {
       type: Array | String,
@@ -141,16 +147,19 @@ export default {
           .isSame(moment(endTime).startOf("month"), "day")
       ) {
         // 判断是否在同一个月
-        if (Vue.$dateRangePosition === "left") {
+        if (Vue.prototype.$dateRangePosition === "left") {
           this.startTime = moment(this.range.start);
           this.endTime = moment(endTime)
             .subtract(-1, "months")
             .startOf("month");
-        } else if (Vue.$dateRangePosition === "right") {
+        } else if (Vue.prototype.$dateRangePosition === "right") {
           this.startTime = moment(startTime)
             .subtract(1, "months")
             .startOf("month");
           this.endTime = moment(this.range.end);
+        } else {
+          this.startTime = moment(this.range.start);
+          this.endTime = moment(this.startTime).add(1, "months");
         }
       } else {
         this.startTime = moment(this.range.start);
@@ -192,6 +201,11 @@ export default {
     }
   },
   methods: {
+    setDisabledDate(current) {
+      if (this.disabledDate) {
+        return this.disabledDate(current);
+      }
+    },
     overDay(val, type) {
       const date = val;
       if (type === 1) {
@@ -283,14 +297,18 @@ export default {
     },
     handlePrevYear() {
       this.startTime = moment(this.startTime).subtract(1, "years");
+      this.endTime = moment(this.endTime).subtract(1, "years");
     },
     handlePrevMonth() {
       this.startTime = moment(this.startTime).subtract(1, "months");
+      this.endTime = moment(this.endTime).subtract(1, "months");
     },
     handleNextMonth() {
+      this.startTime = moment(this.startTime).add(1, "months");
       this.endTime = moment(this.endTime).add(1, "months");
     },
     handleNextYear() {
+      this.startTime = moment(this.startTime).add(1, "years");
       this.endTime = moment(this.endTime).add(1, "years");
     },
     setRange(val, insert) {
@@ -316,11 +334,11 @@ export default {
       if (
         moment(this.range.start).isAfter(moment(this.endTime).startOf("month"))
       ) {
-        Vue.$dateRangePosition = "right";
+        Vue.prototype.$dateRangePosition = "right";
       } else if (
         moment(this.range.end).isBefore(moment(this.startTime).endOf("month"))
       ) {
-        Vue.$dateRangePosition = "left";
+        Vue.prototype.$dateRangePosition = "left";
       }
 
       this.gate = [];

@@ -3,6 +3,14 @@
     data() {
       return {
         formData: { name: "", mail: "", select: "", date: "" },
+        formData1: {
+          a: [
+            {
+              label: "行1",
+              value: ""
+            }
+          ]
+        },
         options: [
           {
             value: "选项1",
@@ -44,6 +52,18 @@
                 else console.log('校验失败');
             })
         },
+        handleSubmit1() {
+          this.$refs.form1.validate(valid => {
+            if (valid) console.log("提交成功");
+            else console.log("校验失败");
+          });
+        },
+        add() {
+          this.formData1.a.push({
+            label: "行1",
+            value: ""
+          });
+        },
         handleReset() { this.$refs.form.resetFields() }
     }
   };
@@ -53,7 +73,7 @@
 
 ## 基础用法
 
-:::demo 通过`plain`属性可以设置为朴素的按钮
+:::demo
 
 ```html
 <template>
@@ -72,8 +92,12 @@
         <cys-input v-model="formData.mail" placeholder="请输入内容"></cys-input>
       </cys-form-item>
       <cys-form-item :label="'邮箱11：'" prop="select">
-        <cys-select v-model="formData.select" 
-            :filter="true" :clearable="true" placeholder="请选择">
+        <cys-select
+          v-model="formData.select"
+          :filter="true"
+          :clearable="true"
+          placeholder="请选择"
+        >
           <cys-option
             v-for="item in options"
             :key="item.value"
@@ -84,9 +108,11 @@
         </cys-select>
       </cys-form-item>
       <cys-form-item :label="'邮箱11：'" prop="date">
-        <cys-date-picker v-model="formData.date" placeholder="选择日期"></cys-date-picker>
+        <cys-date-picker
+          v-model="formData.date"
+          placeholder="选择日期"
+        ></cys-date-picker>
       </cys-form-item>
-      
     </cys-form>
     <cys-button @click="handleSubmit">提交</cys-button>
     <cys-button plain @click="handleReset">重置</cys-button>
@@ -139,6 +165,68 @@
       },
       handleReset() {
         this.$refs.form.resetFields();
+      }
+    }
+  };
+</script>
+```
+
+:::
+
+## 动态表单
+
+:::demo
+
+```html
+<template>
+  <div>
+    <cys-form
+      ref="form1"
+      v-model="formData1"
+      :label-width="'80px'"
+      :inline="true"
+    >
+      <cys-form-item
+        :key="index"
+        :label="item.label"
+        :prop="'a.' + index + '.value'"
+        :label-width="'80px'"
+        v-for="(item,index) in formData1.a"
+        :rules="[{ required: true, message: '不能为空', trigger: 'blur' }]"
+      >
+        <cys-input v-model="item.value" placeholder="请输入内容"></cys-input>
+      </cys-form-item>
+    </cys-form>
+    <cys-button @click="add">添加</cys-button>
+    <cys-button @click="handleSubmit1">提交</cys-button>
+  </div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        formData1: {
+          a: [
+            {
+              label: "行1",
+              value: ""
+            }
+          ]
+        }
+      };
+    },
+    methods: {
+      handleSubmit1() {
+        this.$refs.form1.validate(valid => {
+          if (valid) console.log("提交成功");
+          else console.log("校验失败");
+        });
+      },
+      add() {
+        this.formData1.a.push({
+          label: "行1",
+          value: ""
+        });
       }
     }
   };

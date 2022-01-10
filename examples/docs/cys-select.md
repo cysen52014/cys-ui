@@ -20,8 +20,8 @@
         }],
         value: '',
         value1:'',
-        value2:'',
-        value3:'',
+        value2:'Beijing',
+        value3: ['选项1', '选项2'],
         cities: [{
           value: 'Beijing',
           label: '北京'
@@ -202,7 +202,7 @@
 
 ```html
 <template>
-  <cys-select v-model="value3" :filter="true" placeholder="请选择">
+  <cys-select v-model="value3" :multiple="true" :filter="true" clearable placeholder="请选择">
     <cys-option
       v-for="item in options"
       :key="item.value"

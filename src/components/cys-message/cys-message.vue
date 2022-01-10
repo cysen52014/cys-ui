@@ -17,7 +17,7 @@
     <div :class="['cys-alert-message']">
       {{ message }}
     </div>
-    <i @click="handleClose" class="cysicon close icon-icon_close"></i>
+    <i @click="handleClose" class="cysicon close icon-guanbi"></i>
   </div>
 </template>
 <script>
@@ -47,7 +47,7 @@ export default {
     width 350px;
     padding 10px 15px
     border-radius 5px
-    position absolute
+    position fixed
     left 50%
     top 0
     z-index 2078;

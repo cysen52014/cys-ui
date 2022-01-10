@@ -13,13 +13,13 @@
     >
       <div class="cys-table-wrapper">
         <div class="cys-table-scwrapper">
-          <div class="cys-table-header"><Colum :options="options" /></div>
+          <div class="cys-table-header" v-show="showHeader"><Colum :options="options" /></div>
           <div class="cys-table-tbody">
             <div :class="getTodyWrapClass">
               <table cellpadding="0" cellspacing="0" class="tbody-wrapper">
                 <tbody v-if="tableData.length > 0">
                   <tr v-for="(item, index) in tableData" :key="index">
-                    <td v-if="item.expand" :colspan="item.colspan">
+                    <td v-if="item.expand" :colspan="item.colspan" class="row-expand">
                       <slot :name="item.slotName" :row="item"></slot>
                     </td>
                     <td
@@ -48,10 +48,17 @@
                           @change="setRowChecked($event, item2)"
                           v-model="item[item2.prop]"
                       /></span>
-                      <span v-else-if="item2.expand"
-                        ><i
+                      <span class="col-expand" v-else-if="item2.expand"
+                        > 
+                        <i
+                          v-if="!treeProps"
                           @click="expandChange(item)"
-                          class="cysicon icon-arrow_right"
+                          :class="!item.isOpen ? 'cysicon icon-angleright' : 'cysicon icon-angledown'"
+                        ></i>
+                        <i
+                          v-else-if="treeProps && item[treeProps.children] && item[treeProps.children].length > 0"
+                          @click="expandChange(item)"
+                          :class="!item.isOpen ? 'cysicon icon-angleright' : 'cysicon icon-angledown'"
                         ></i>
                         {{ item[item2.prop] }}</span
                       >
@@ -61,7 +68,11 @@
                 </tbody>
                 <tbody v-else>
                   <tr>
-                    <td class="center">无数据</td>
+                    <td class="center">
+                      <slot name="empty">
+                        <span>{{ emptyText || "暂无数据" }}</span></slot
+                      >
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -80,6 +91,7 @@
       :layout="'total, sizes, prev, pager, next, jumper'"
       @current-change="currentChange"
       @size-change="sizeChange"
+      :currentPage="page.current"
     ></cys-pagination>
   </div>
 </template>
@@ -102,6 +114,9 @@ export default {
       type: Boolean,
       default: true
     },
+    treeProps: {
+      type: Object
+    },
     striped: {
       type: Boolean,
       default: false
@@ -109,6 +124,10 @@ export default {
     border: {
       type: Boolean,
       default: false
+    },
+    showHeader: {
+      type: Boolean,
+      default: true
     },
     height: {
       type: String,
@@ -122,9 +141,24 @@ export default {
       type: String,
       default: ""
     },
+    data: {
+      type: Array,
+      default: () => {}
+    },
+    emptyText: {
+      type: String,
+      default: ""
+    },
     options: { type: Object, default: {} }
   },
   watch: {
+    data: {
+      handler(val, oldval) {
+        if (val && val.length > 0) {
+          this.getNaturalData();
+        }
+      }
+    },
     tableData: {
       handler(val, oldval) {
         if (val && val.length > 0) {
@@ -177,6 +211,8 @@ export default {
   },
   data() {
     return {
+      isSort: "",
+      sortKey: "",
       parameter: {},
       page: {
         current: 1,
@@ -195,7 +231,13 @@ export default {
     };
   },
   created() {
-    this.getTableData();
+    if (this.data) {
+      this.getNaturalData();
+    } else {
+      if (!this.options.apiAwait) {
+        this.getTableData();
+      }
+    }
   },
   methods: {
     getStyles(item2) {
@@ -228,7 +270,7 @@ export default {
     },
     selectedRows() {
       const rows = this.tableData.filter(row => row._keySelection === true);
-      this.$emit("change", rows);
+      this.$emit("selection-change", rows);
     },
     setFixed(fixed) {
       this.fixed = fixed;
@@ -251,18 +293,21 @@ export default {
         this.tableData.splice(index + 1, 1);
         isOpen = false;
       }
+      return isOpen;
     },
     toggleRowExpansion(item, isOpen) {
       if (isOpen) {
         if (this.rowKeys.every(v => v !== item[this.rowKey])) {
           this.rowKeys.push(item[this.rowKey]);
           const index = this.getRowIndex(item);
-          this.tableData.splice(index + 1, 0, {
+          const expRow = {
             expand: true,
             slotName: "expend",
             row: item,
             colspan: this.cols.length
-          });
+          }
+          this.tableData.splice(index + 1, 0, expRow);
+          this.$emit("expand-rows", expRow);
         }
       } else {
         this.rowKeys = this.rowKeys.filter(v => v !== item[this.rowKey]);
@@ -283,6 +328,7 @@ export default {
     },
     expandChange(item) {
       const isOpen = this.expandKeys(item);
+      item.isOpen = isOpen;
       this.$emit("expand-change", isOpen);
       this.$forceUpdate();
     },
@@ -325,6 +371,7 @@ export default {
           cKey: "errorCode", // 接口返回参数key 默认errorCode
           dKey: "data", // 接口返回参数key 默认errorCode
           tKey: "total",
+          lKey: "list",
           pageNumKey: "pageNum",
           pageSizeKey: "pageSize",
           failed: () => {}, // 接口失败回调
@@ -360,17 +407,80 @@ export default {
         clearTimeout(time);
       }, time);
     },
+    setKeyIndex() {
+      if (this.options.isIndex) {
+        this.tableData = this.tableData.map((r, index) => {
+          r._keyIndex = (this.page.current - 1) * this.page.size + index + 1;
+          return r;
+        });
+      }
+    },
+    setKeySelection() {
+      if (this.options.isSelection) {
+        this.tableData.map((r, index) => {
+          r._keySelection = false;
+          return r;
+        });
+      }
+    },
+    asce(item) {
+      if (!this.sortData) {
+        this.sortData = [...this.tableData];
+      }
+      if (item.sort === "asce") {
+        this.tableData = this.tableData.sort((x, y) => {
+          return x[item.sortKey] > y[item.sortKey] ? 1 : -1;
+        });
+        this.$emit("sort-change", item.sortKey, "asce");
+      } else {
+        this.tableData = [...this.sortData];
+        this.$emit("sort-change", item.sortKey, "cancel");
+      }
+    },
+    desc(item) {
+      if (!this.sortData) {
+        this.sortData = [...this.tableData];
+      }
+      if (item.sort === "desc") {
+        this.tableData = this.tableData.sort((x, y) => {
+          return x[item.sortKey] < y[item.sortKey] ? 1 : -1;
+        });
+        this.$emit("sort-change", item.sortKey, "desc");
+      } else {
+        this.tableData = [...this.sortData];
+        this.$emit("sort-change", item.sortKey, "cancel");
+      }
+    },
+    getNaturalData() {
+      const opts = this.getOptions();
+      const tKey = opts.method.tKey;
+      const lKey = opts.method.lKey;
+      if (opts.isLoading) opts.isLoading = true;
+      if (opts.isPagination) {
+        this.total = this.data[tKey] * 1;
+        this.tableData = this.data[lKey];
+      } else {
+        this.total = 0;
+        this.tableData = this.data;
+      }
+
+      if (this.isSort && this.isSort === "asce") {
+        this.asce();
+      } else if (this.isSort && this.isSort === "desc") {
+        this.desc();
+      }
+      if (opts.isLoading) opts.isLoading = false;
+      this.setKeyIndex();
+      this.setKeySelection();
+      this.$forceUpdate();
+    },
     async getTableData() {
       const opts = this.getOptions();
       const method = opts.method.interface;
-      if (!method) {
-        this.tableData = this.options.tbody.data;
-        return;
-      }
-
       const cKey = opts.method.cKey;
       const cVal = opts.method.cVal;
       const tKey = opts.method.tKey;
+      const lKey = opts.method.lKey;
       const success = opts.method.success;
       const failed = opts.method.failed;
       const dKey = opts.method.dKey;
@@ -380,31 +490,26 @@ export default {
       const parameter = this.getParameter();
       const respone = await method(parameter);
       this.timeOut = false;
-      if (respone[cKey] * 1 === cVal * 1) {
+      if (respone && respone[cKey] * 1 === cVal * 1) {
         const data = respone[dKey];
         if (opts.isPagination) {
-          this.total = data.total * 1;
-          this.tableData = data.list;
+          this.total = data[tKey] * 1;
+          this.tableData = data[lKey];
         } else {
           this.total = 0;
           this.tableData = data;
         }
 
+        if (this.isSort && this.isSort === "asce") {
+          this.asce();
+        } else if (this.isSort && this.isSort === "desc") {
+          this.desc();
+        }
+
         if (opts.isLoading) opts.isLoading = false;
 
-        if (this.options.isIndex) {
-          this.tableData = this.tableData.map((r, index) => {
-            r._keyIndex = (this.page.current - 1) * this.page.size + index + 1;
-            return r;
-          });
-        }
-
-        if (this.options.isSelection) {
-          this.tableData.map((r, index) => {
-            r._keySelection = false;
-            return r;
-          });
-        }
+        this.setKeyIndex();
+        this.setKeySelection();
 
         this.$forceUpdate();
         success && success(respone);
@@ -421,9 +526,11 @@ export default {
       this.getTableData();
     },
     sizeChange(val) {
-      this.page.current = 1;
-      this.page.size = val;
-      this.getTableData();
+      if(val * 1 !== this.page.size) {
+        this.page.current = 1;
+        this.page.size = val;
+        this.getTableData();
+      }
     },
     setParameter(parmas) {
       const opts = this.getOptions();
@@ -432,11 +539,24 @@ export default {
         ? window.__storevueappdate__state_formData
         : {};
       if (opts.isPagination) {
-        const pageNumKey = opts.method.pageNumKey;
-        const pageSizeKey = opts.method.pageSizeKey;
-        const paper = {};
-        paper[pageNumKey] = this.page.current;
-        paper[pageSizeKey] = this.page.size;
+        let pageNumKey = opts.method.pageNumKey;
+        let pageSizeKey = opts.method.pageSizeKey;
+        let paper = {};
+        if(this.$uiConfig.pager) {
+          pageNumKey = this.$uiConfig.pager.page;
+          pageSizeKey = this.$uiConfig.pager.size;
+          if(this.$uiConfig.pager.key) {
+            paper[this.$uiConfig.pager.key] = {};
+            paper[this.$uiConfig.pager.key][pageNumKey] = this.page.current;
+            paper[this.$uiConfig.pager.key][pageSizeKey] = this.page.size;
+          } else{
+            paper[pageNumKey] = this.page.current;
+            paper[pageSizeKey] = this.page.size;
+          }
+        } else {
+          paper[pageNumKey] = this.page.current;
+          paper[pageSizeKey] = this.page.size;
+        }
         const opc = opts.method.parmas ? opts.method.parmas : {};
         this.parameter = Object.assign(
           {},
@@ -462,7 +582,6 @@ export default {
 </script>
 <style lang="stylus">
 @import '../../styles/variable';
-
 .cys-table {
   display : flex;
   position: relative;
@@ -553,6 +672,11 @@ export default {
         td {
           border-bottom: 0;
         }
+        table {
+          td {
+            border-bottom: 1px solid $--table-border-color;
+          }
+        }
       }
     }
   }
@@ -633,7 +757,41 @@ export default {
     }
   }
 
+  .v-sort {
+    width 20px;
+    display inline-block
+    position relative
+    height 10px
+    &.asce {
+      .u {
+         border-bottom-color: #409eff;
+      }
+    }
+    &.desc {
+      .d {
+         border-top-color: #409eff;
+      }
+    }
 
+    .u {
+      width: 0;
+      height: 0;
+      border: 5px solid transparent;
+      border-bottom-color: #c0c4cc;
+      position: absolute;
+      left: 7px;
+      top: -8px;
+    }
+    .d {
+      width: 0;
+      height: 0;
+      border: 5px solid transparent;
+      border-top-color: #c0c4cc;
+      position: absolute;
+      left: 7px;
+      bottom: -7px;
+    }
+  }
 
 }
 </style>

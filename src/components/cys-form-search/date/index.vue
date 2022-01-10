@@ -3,10 +3,13 @@
     <div class="cys-form-label" v-html="option.label"></div>
     <div class="cys-form-content">
       <cys-date-picker
-        placeholder="选择时间"
         v-model="option.value"
         :type="option.type"
         @change="change"
+        :placeholder="option.placeholder || '选择时间'"
+        :disabledDate="option.disabledDate"
+        :clearable="option.clearable || false"
+        :disabled="option.disabled || false"
       ></cys-date-picker>
     </div>
   </div>
@@ -17,6 +20,7 @@ export default {
   componentName: "CysFormDate",
   props: {
     option: {
+      current: Number,
       type: Object,
       default: {}
     }
@@ -39,7 +43,7 @@ export default {
       } else {
         obj[this.option.field] = val;
       }
-      this.$emit("change", obj);
+      this.$emit("change", obj, this.option.field);
     }
   }
 };

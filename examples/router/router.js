@@ -10,6 +10,10 @@ let routes = [{
   path: '/changeLog',
   name: 'changeLog',
   component: r => require.ensure([], () => r(require('../views/change-log.md')))
+}, {
+  path: '/quickStart',
+  name: 'quickStart',
+  component: r => require.ensure([], () => r(require('../views/quickstart.md')))
 }];
 
 

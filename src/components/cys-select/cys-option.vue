@@ -1,77 +1,92 @@
 <template>
-    <li :class="['cys-select--option',{
-        'cys-select--option-selected':isSelected
-    }]"
-        v-show="visible"
-        @click="handleClick">
-        <slot>{{ optionLabel }}</slot>
-    </li>
+  <li
+    :class="[
+      'cys-select--option',
+      {
+        'cys-select--option-selected': isSelected
+      }
+    ]"
+    v-if="visible"
+    @click="handleClick"
+  >
+    <slot>{{ optionLabel }}</slot>
+  </li>
 </template>
 <script>
-import Emitter from '../../mixins/emitter.js';
+import Emitter from "../../mixins/emitter.js";
 export default {
-    name: 'CysOption',
-    componentName: 'CysOption',
-    mixins: [Emitter],
-    inject: ['shSelect'],
-    props: {
-        value: {
-            type: [String, Number, Object],
-            required: true
-        },
-        label: {
-            type: [String, Number]
-        }
+  name: "CysOption",
+  componentName: "CysOption",
+  mixins: [Emitter],
+  inject: ["shSelect"],
+  props: {
+    value: {
+      type: [String, Number, Object],
+      required: true
     },
-    data() {
-        return {
-            visible: true,
-        };
-    },
-    computed: {
-        optionLabel() {
-            return this.label || this.value;
-        },
-        isSelected() {
-            return this.shSelect.value === this.value;
-        }
-    },
-    methods: {
-        handleClick() {
-            this.dispatch('CysSelect', 'handleOptionClick', [this]);
-        },
-        query(queryText) {
-            // query 里如果有正则中的特殊字符，需要先将这些字符转义
-            let parsedQueryText = String(queryText).replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, '\\$1');
-            this.visible = new RegExp(parsedQueryText, 'i').test(this.optionLabel);
-        }
-    },
-    created() {
-        if (this.visible) {
-            this.shSelect.showOptionNumber++;
-        }
-        // this.shSelect.options.push(this);
-        this.$on('query', this.query);
-    },
-    mounted() {
-        if (this.isSelected) {
-            this.handleClick();
-        }
-    },
-    watch: {
-        visible() {
-            if (this.visible) {
-                this.shSelect.showOptionNumber++;
-            } else {
-                this.shSelect.showOptionNumber--;
-            }
-        },
-        isSelected(value) {
-            if (value) {
-                this.handleClick();
-            }
-        }
+    label: {
+      type: [String, Number]
     }
+  },
+  data() {
+    return {
+      visible: true
+    };
+  },
+  computed: {
+    optionLabel() {
+      return this.label || this.value;
+    },
+    isSelected() {
+      return this.shSelect.multiple
+        ? this.shSelect.value.includes(this.value)
+        : this.shSelect.value === ""
+        ? false
+        : this.shSelect.value === this.value;
+    }
+  },
+  methods: {
+    handleClick() {
+      this.dispatch("CysSelect", "handleOptionClick", [this]);
+    },
+    query(queryText) {
+      // query 里如果有正则中的特殊字符，需要先将这些字符转义
+      let parsedQueryText = String(queryText).replace(
+        /(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g,
+        "\\$1"
+      );
+      this.visible = new RegExp(parsedQueryText, "i").test(this.optionLabel);
+      // this.shSelect.resetScroll();
+      // console.log('this.optionLabel', this.optionLabel);
+    }
+  },
+  created() {
+    if (this.visible) {
+      this.shSelect.showOptionNumber++;
+    }
+    // this.shSelect.options.push(this);
+    this.$on("query", this.query);
+  },
+  mounted() {
+    if (this.isSelected) {
+      this.handleClick();
+    }
+  },
+  watch: {
+    visible() {
+      if (this.visible) {
+        this.shSelect.showOptionNumber++;
+      } else {
+        this.shSelect.showOptionNumber--;
+      }
+    },
+    isSelected(value) {
+      if (value) {
+        this.shSelect.setSelectOptions(this);
+        // this.handleClick();
+      }
+    }
+  }
 };
 </script>
 <style lang="stylus">

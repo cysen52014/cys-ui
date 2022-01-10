@@ -3,6 +3,7 @@
     export default {
         data(){
             return {
+                time: '',
                 date:'2222-02-22',
                 date1:''
             }
@@ -101,7 +102,7 @@
 
 ```html
 <template>
-    <cys-date-picker placeholder="选择时间" type="time"></cys-date-picker>
+    <cys-date-picker placeholder="选择时间" v-model="time" type="time"></cys-date-picker>
     <cys-date-picker placeholder="选择时间" type="datetime"></cys-date-picker>
 </template>
 ```

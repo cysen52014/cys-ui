@@ -16,6 +16,9 @@
           <li>
             <router-link to="/changeLog">更新日志</router-link>
           </li>
+          <li>
+            <router-link to="/quickStart">快速上手</router-link>
+          </li>
           <li class="main-body-link-group">
             <a>组件</a>
             <ul>

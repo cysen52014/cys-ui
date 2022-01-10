@@ -34,7 +34,7 @@
       :class="currentPageIndex === 1 ? 'disabled' : ''"
       @click="prev"
     >
-      <i class="cysicon icon-arrow_left"></i>
+      <i class="cysicon icon-angleleft"></i>
     </div>
     <ul class="cys-pager">
       <li
@@ -51,7 +51,7 @@
       :class="currentPageIndex === pageMax ? 'disabled' : ''"
       @click="next"
     >
-      <i class="cysicon icon-arrow_right"></i>
+      <i class="cysicon icon-angleright"></i>
     </div>
     <div class="cys-pagination__jump" v-if="layout.indexOf('total') > -1">
       <span>前往</span>
@@ -113,27 +113,23 @@ export default {
   watch: {
     currentPage: {
       handler(newName, oldName) {
-        if (newName) {
-          this.currentPageIndex = newName;
-        }
+        this.currentPageIndex = newName;
+        this.getPageNumber();
       },
       immediate: true,
       deep: true
     },
     total: {
       handler(newName, oldName) {
-        if (newName) {
-          this.getPageNumber();
-        }
+        this.getPageNumber();
       },
       immediate: true,
       deep: true
     },
     pageSize: {
       handler(newName, oldName) {
-        if (newName) {
-          this.pageSizeIndex = newName;
-        }
+        this.pageSizeIndex = newName;
+        this.getPageNumber();
       },
       immediate: true,
       deep: true
@@ -150,7 +146,9 @@ export default {
   methods: {
     getPageNumber() {
       const cIndex = Math.ceil(this.pageCount / 2);
-      const max = Math.ceil(this.total / this.pageSizeIndex);
+      const max = Math.ceil(
+        (this.total * 1 === 0 ? 1 : this.total) / this.pageSizeIndex
+      );
       const li = [];
       if (this.pageCount < max) {
         this.pageMax = max;
@@ -272,16 +270,19 @@ export default {
       this.paperList = li;
     },
     resetCurrentPage(val) {
+      if(val * 1 === this.currentPageIndex) return;
       this.currentPageIndex = val * 1;
       this.getPageNumber();
       this.$emit("current-change", this.currentPageIndex);
     },
     changeJumpPage(val) {
+      if(val * 1 === this.currentPageIndex) return;
       this.currentPageIndex = val * 1;
       this.getPageNumber();
       this.$emit("current-change", this.currentPageIndex);
     },
     changeCurrentPage(index) {
+      if(val * 1 === this.currentPageIndex) return;
       if (isNaN(Number(index))) return;
       const max = Math.ceil(this.total / this.pageSizeIndex);
       this.currentPageIndex = index * 1;

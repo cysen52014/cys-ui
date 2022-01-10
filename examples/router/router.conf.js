@@ -70,6 +70,11 @@ export default {
       name: 'cys-circle',
       title: "CysCircle 进度环"
     },
+    'cys-switch': {
+      path: 'cys-switch',
+      name: 'cys-switch',
+      title: "Switch 开关"
+    },
     'cys-avatar': {
       path: 'cys-avatar',
       name: 'cys-avatar',
@@ -83,22 +88,32 @@ export default {
     'cys-pagination': {
       path: 'cys-pagination',
       name: 'cys-pagination',
-      title: "cys-pagination 分页"
+      title: "cysPagination 分页"
     },
     'cys-form-search': {
       path: 'cys-form-search',
       name: 'cys-form-search',
-      title: "cys-form-search 搜索表单"
+      title: "CysFormSearch 搜索表单"
     },
     'cys-form': {
       path: 'cys-form',
       name: 'cys-form',
-      title: "cys-form 表单"
+      title: "CysForm 表单"
     },
     'cys-cascader': {
       path: 'cys-cascader',
       name: 'cys-cascader',
-      title: "cys-cascader 联动菜单"
+      title: "CysCascader 联动菜单"
+    },
+    'cys-scrollbar': {
+      path: 'cys-scrollbar',
+      name: 'cys-scrollbar',
+      title: "CysScrollbar 滚动条"
+    },
+    'cyi-table': {
+      path: 'cyi-table',
+      name: 'cyi-table',
+      title: "table 表格"
     }
   }
 }

@@ -147,7 +147,7 @@ export default {
 
     .cys-checkbox--label {
         display: inline-block;
-        padding-left: 10px;
+        padding-left: 3px;
         line-height: 20px;
         font-size: 14px;
     }

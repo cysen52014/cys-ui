@@ -71,7 +71,7 @@
 
 ## 确认消息
 
-:::demo 通过`this.$shConfirm(message,title,options)`或者`this.$shConfirm(message,options)`方法全局调用
+:::demo 通过`this.$shConfirm(message,title,options)`或者`hConfirm(message,options)`方法全局调用
 
 ```html
 <template>

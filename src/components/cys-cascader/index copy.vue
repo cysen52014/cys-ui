@@ -85,7 +85,7 @@ export default {
                     data[this.props.label],
                     h("i", {
                       domProps: {
-                        className: "cysicon r icon-arrow_right"
+                        className: "cysicon r icon-angleright"
                       }
                     })
                   ]
@@ -150,7 +150,7 @@ export default {
                       data[this.props.label],
                       h("i", {
                         domProps: {
-                          className: "cysicon r icon-arrow_right"
+                          className: "cysicon r icon-angleright"
                         }
                       })
                     ]
