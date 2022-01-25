@@ -60,9 +60,9 @@
                           @click="expandChange(item)"
                           :class="!item.isOpen ? 'cysicon icon-angleright' : 'cysicon icon-angledown'"
                         ></i>
-                        {{ item[item2.prop] }}</span
+                        {{ (String(item[item2.prop]) !== '0' && item[item2.prop]) ! ? colEmptyText : item[item2.prop] }}</span
                       >
-                      <span v-else> {{ item[item2.prop] }}</span>
+                      <span v-else> {{ (String(item[item2.prop]) !== '0' && item[item2.prop]) ! ? colEmptyText : item[item2.prop] }}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -144,6 +144,10 @@ export default {
     data: {
       type: Array,
       default: () => {}
+    },
+    colEmptyText: {
+      type: String,
+      default: ""
     },
     emptyText: {
       type: String,
