@@ -1,0 +1,87 @@
+@font-face {
+  font-family: "cysicon"; /* Project id 2190416 */
+  src: url('cysicon.woff2?t=1621582370914') format('woff2'),
+       url('cysicon.woff?t=1621582370914') format('woff'),
+       url('cysicon.ttf?t=1621582370914') format('truetype');
+}
+
+.cysicon {
+  font-family: "cysicon" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-guanbi:before {
+  content: "\e611";
+}
+
+.icon-zuoshuangjiantou:before {
+  content: "\e610";
+}
+
+.icon-zuoshuangjiantou1:before {
+  content: "\e608";
+}
+
+.icon-clear:before {
+  content: "\e601";
+}
+
+.icon-caretright:before {
+  content: "\e631";
+}
+
+.icon-caretleft:before {
+  content: "\e632";
+}
+
+.icon-rili-copy:before {
+  content: "\e600";
+}
+
+.icon-delete:before {
+  content: "\e620";
+}
+
+.icon-caretdown:before {
+  content: "\e633";
+}
+
+.icon-caretup:before {
+  content: "\e634";
+}
+
+.icon-anonymous:before {
+  content: "\e648";
+}
+
+.icon-search:before {
+  content: "\e64a";
+}
+
+.icon-exclamationsign:before {
+  content: "\e685";
+}
+
+.icon-angledown:before {
+  content: "\e6dd";
+}
+
+.icon-angleup:before {
+  content: "\e6de";
+}
+
+.icon-angleright:before {
+  content: "\e6df";
+}
+
+.icon-angleleft:before {
+  content: "\e6e0";
+}
+
+.icon-bianji:before {
+  content: "\e61a";
+}
+

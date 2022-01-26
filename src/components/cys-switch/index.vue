@@ -16,7 +16,7 @@ export default {
   mixins: [Emitter],
   props: {
     value: {
-      type: Boolean,
+      type: Boolean | Number,
       default: false
     },
     width: {
